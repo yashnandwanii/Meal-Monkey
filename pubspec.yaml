@@ -30,6 +30,7 @@ dependencies:
   google_maps_flutter: ^2.12.1
   
   custom_map_markers: ^0.0.2+1
+  get: ^4.7.2
 
 dev_dependencies:
   flutter_test:

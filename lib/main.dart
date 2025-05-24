@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/controllers/provider/authProvider/authProvider.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:food_delivery_app/routes/routes.dart';
 import 'package:provider/provider.dart';
-import 'firebase_options.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Add this line
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // WidgetsFlutterBinding.ensureInitialized(); // Add this line
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
   runApp(const MyApp());
 }
 
