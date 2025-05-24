@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "717483379177",
+    "project_id": "meal-monkey-38084",
+    "storage_bucket": "meal-monkey-38084.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717483379177:android:345dcc9615e9251991e378",
+        "android_client_info": {
+          "package_name": "com.example.food_delivery_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717483379177-f8hppavt1mnagmt3v18jmq4182iujnlv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrMkwGvTrSWyHOtFpMiZMMewqLD5XQ5c0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "717483379177-f8hppavt1mnagmt3v18jmq4182iujnlv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "717483379177-3nba1tinhs2jcb0kln0kb8qc632renct.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.codeforany.foodDelivery"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

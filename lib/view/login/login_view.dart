@@ -3,10 +3,14 @@ import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common_widgets/round_button.dart';
 import 'package:food_delivery_app/common_widgets/round_icon_button.dart';
 import 'package:food_delivery_app/common_widgets/round_textfield.dart';
-import 'package:food_delivery_app/services/auth.dart';
+import 'package:food_delivery_app/controllers/provider/authProvider/authProvider.dart';
+import 'package:food_delivery_app/controllers/services/authServices.dart/mobileAuthServices.dart';
 import 'package:food_delivery_app/view/login/reset_password.dart';
 import 'package:food_delivery_app/view/login/signup_view.dart';
 import 'package:food_delivery_app/view/on_boarding/on_boarding_view.dart';
+
+import 'package:otp_pin_field/otp_pin_field.dart';
+import 'package:provider/provider.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -18,60 +22,223 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   String email = '';
   String password = '';
+  var selectedCountry = '+91';
+  bool recieveOtpButtonPressed = false;
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final GlobalKey<OtpPinFieldState> _otpPinFieldController =
+      GlobalKey<OtpPinFieldState>();
 
-  // userLogin() async {
-  //   try {
-  //     await FirebaseAuth.instance
-  //         .signInWithEmailAndPassword(
-  //             email: emailController.text, password: passwordController.text)
-  //         .then((value) {
-  //       Navigator.pushReplacement(context,
-  //           MaterialPageRoute(builder: (context) => const OnBoardingView()));
-  //       print("tapped");
-  //     });
-  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //         backgroundColor: Colors.green,
-  //         content: Text(
-  //           'Login Success',
-  //           style: TextStyle(
-  //             color: Colors.white,
-  //             fontWeight: FontWeight.w800,
-  //             fontSize: 14,
-  //           ),
-  //         )));
-  //   } on FirebaseAuthException catch (e) {
-  //     if (e.code == 'user-not-found') {
-  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //           backgroundColor: Colors.red,
-  //           content: Text(
-  //             'No user found for that email.',
-  //             style: TextStyle(
-  //               color: Colors.white,
-  //               fontWeight: FontWeight.w800,
-  //               fontSize: 14,
-  //             ),
-  //           )));
-  //     } else if (e.code == 'wrong-password') {
-  //       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //           backgroundColor: Colors.red,
-  //           content: Text(
-  //             'Wrong password provided for that user.',
-  //             style: TextStyle(
-  //               color: Colors.white,
-  //               fontWeight: FontWeight.w800,
-  //               fontSize: 14,
-  //             ),
-  //           )));
-  //     }
-  //   }
-  // }
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        recieveOtpButtonPressed = false;
+      });
+    });
+  }
+
+  void _showPhoneNumberBottomSheet() {
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 25,
+            right: 25,
+            top: 20,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Enter your phone number',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Tcolor.primaryText,
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  hintText: 'Enter phone number',
+                  prefixIcon: Icon(Icons.phone, color: Tcolor.primary),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Tcolor.secondaryText),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              RoundButton(
+                onPressed: () {
+                  if (_phoneController.text.isNotEmpty) {
+                    setState(() {
+                      recieveOtpButtonPressed = true;
+                    });
+                    context.read<MobileAuthprovider>().updateMobileNumber(
+                          '$selectedCountry${_phoneController.text.trim()}',
+                        );
+                    Mobileauthservices.receiveOtp(
+                      context: context,
+                      phoneNo:
+                          '$selectedCountry${_phoneController.text.trim()}',
+                    );
+                    Navigator.pop(context);
+                    setState(() {
+                      recieveOtpButtonPressed = false;
+                    }); // Close phone number sheet
+                    _showOtpBottomSheet();
+                    // Open OTP sheet
+                  } else {
+                    setState(() {
+                      recieveOtpButtonPressed = false;
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Please enter a phone number')),
+                    );
+                  }
+                },
+                text: recieveOtpButtonPressed ? 'Loading...' : 'Next',
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  /// Show bottom sheet for OTP verification
+  void _showOtpBottomSheet() {
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 25,
+            right: 25,
+            top: 20,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Enter OTP',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Tcolor.primaryText,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'We have sent an OTP to +91${_phoneController.text}',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Tcolor.secondaryText,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                height: 60,
+                child: OtpPinField(
+                  onChange: (text) => print(text),
+                  key: _otpPinFieldController,
+                  autoFillEnable: false,
+                  textInputAction: TextInputAction.done,
+                  onSubmit: (text) {
+                    // Handle OTP submission
+                  },
+                  otpPinFieldStyle: OtpPinFieldStyle(
+                    showHintText: true,
+                    defaultFieldBorderColor: Tcolor.secondaryText,
+                    activeFieldBorderColor: Tcolor.primary,
+                    defaultFieldBackgroundColor: Tcolor.textfield,
+                    activeFieldBackgroundColor: Tcolor.textfield,
+                  ),
+                  maxLength: 4,
+                  showCursor: true,
+                  cursorColor: Colors.indigo,
+                  showDefaultKeyboard: true,
+                  cursorWidth: 3,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  otpPinFieldDecoration:
+                      OtpPinFieldDecoration.defaultPinBoxDecoration,
+                ),
+              ),
+              const SizedBox(height: 20),
+              RoundButton(
+                onPressed: () {
+                  // Handle OTP verification
+                  Mobileauthservices.verifyOtp(
+                    context: context,
+                    otp: _otpPinFieldController.toString(),
+                  );
+                },
+                text: 'Verify OTP',
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  // Handle resend OTP
+                },
+                child: Text(
+                  'Resend OTP',
+                  style: TextStyle(
+                    color: Tcolor.primary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void userLogin() async {
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            'Please fill all the fields',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              fontSize: 14,
+            ),
+          ),
+        ),
+      );
+    }
+    //await AuthController().login(emailController.text, passwordController.text);
+  }
 
   @override
   Widget build(BuildContext context) {
-    // var media = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Tcolor.white,
       body: SingleChildScrollView(
@@ -166,9 +333,11 @@ class _LoginViewState extends State<LoginView> {
               ),
               const SizedBox(height: 15),
               RoundIconButton(
-                onPressed: () {},
-                title: 'Login with Facebook',
-                icon: 'assets/iimg/facebook_logo.png',
+                onPressed: () {
+                  _showPhoneNumberBottomSheet();
+                },
+                title: 'Login with Phone Number',
+                icon: 'assets/iimg/phone.png',
                 color: const Color(0xff367FC0),
               ),
               const SizedBox(height: 25),

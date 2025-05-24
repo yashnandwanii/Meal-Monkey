@@ -3,6 +3,7 @@ import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common_widgets/round_button.dart';
 import 'package:food_delivery_app/view/login/login_view.dart';
 import 'package:food_delivery_app/view/login/signup_view.dart';
+import 'package:page_transition/page_transition.dart';
 
 class WelcomeView extends StatefulWidget {
   const WelcomeView({super.key});
@@ -16,6 +17,7 @@ class _WelcomeViewState extends State<WelcomeView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Tcolor.white,
       body: Column(
         children: [
           Stack(
@@ -65,8 +67,9 @@ class _WelcomeViewState extends State<WelcomeView> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const SignupView(),
+                  PageTransition(
+                    type: PageTransitionType.fade,
+                    child: const SignupView(),
                   ),
                 );
               },

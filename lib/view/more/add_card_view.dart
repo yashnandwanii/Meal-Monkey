@@ -46,7 +46,9 @@ class _AddCardViewState extends State<AddCardView> {
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                },
                 icon: Icon(
                   Icons.close,
                   color: Tcolor.primaryText,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common_widgets/round_button.dart';
 import 'package:food_delivery_app/view/main_tabview/main_tabview.dart';
+import 'package:page_transition/page_transition.dart';
 
 class OnBoardingView extends StatefulWidget {
   const OnBoardingView({super.key});
@@ -35,7 +36,6 @@ class _OnBoardingViewState extends State<OnBoardingView> {
   ];
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     controller.addListener(() {
       setState(() {
@@ -48,6 +48,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         alignment: Alignment.center,
         children: [
@@ -129,10 +130,10 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                     onPressed: () {
                       if (selectPage >= 2) {
                         // go to Home screen
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const MainTabview()));
+                        context.pushReplacementTransition(
+                          type: PageTransitionType.rightToLeft,
+                          child: const MainTabview(),
+                        );
                       } else {
                         setState(() {
                           selectPage = selectPage + 1;

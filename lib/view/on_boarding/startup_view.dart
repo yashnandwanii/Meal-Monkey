@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/view/login/welcome_view.dart';
+import 'package:page_transition/page_transition.dart';
 
 class StartupView extends StatefulWidget {
   const StartupView({super.key});
@@ -21,8 +23,10 @@ class _StartupViewState extends State<StartupView> {
   }
 
   void welcomePage() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const WelcomeView()));
+    context.pushReplacementTransition(
+      type: PageTransitionType.rightToLeft,
+      child: const WelcomeView(),
+    );
   }
 
   @override
@@ -30,6 +34,7 @@ class _StartupViewState extends State<StartupView> {
     var media = MediaQuery.of(context).size;
 
     return Scaffold(
+      backgroundColor: Tcolor.white,
       body: Stack(
         alignment: Alignment.center,
         children: [

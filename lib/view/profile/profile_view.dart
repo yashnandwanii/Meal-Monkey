@@ -1,201 +1,146 @@
-// import 'dart:io';
+import 'package:flutter/material.dart';
 
-// import 'package:flutter/material.dart';
-// import 'package:food_delivery_app/common_widgets/round_button.dart';
-// import 'package:food_delivery_app/common_widgets/round_textfield.dart';
-// import 'package:food_delivery_app/view/more/my_order_view.dart';
-// import 'package:image_picker/image_picker.dart';
+import 'package:food_delivery_app/common/color_extension.dart';
+import 'package:food_delivery_app/view/profile/edit_profile.dart';
+import 'package:page_transition/page_transition.dart';
 
-// import '../../common/color_extension.dart';
+class ProfileView extends StatefulWidget {
+  const ProfileView({super.key});
 
-// class ProfileView extends StatefulWidget {
-//   const ProfileView({super.key});
+  @override
+  State<ProfileView> createState() => _ProfileViewState();
+}
 
-//   @override
-//   State<ProfileView> createState() => _ProfileViewState();
-// }
+class _ProfileViewState extends State<ProfileView> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Tcolor.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: const Text("Profile"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {},
+            child: const Text("Help"),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildProfileHeader(),
+            const SizedBox(height: 16),
+            _buildListTile(
+              title: "Meal Monkey Prime",
+              subtitle:
+                  "₹472 saved with previous plan\nRenew now to unlock exclusive benefits",
+              trailing:
+                  const Text("EXPIRED", style: TextStyle(color: Colors.orange)),
+            ),
+            _buildListTile(
+              title: "Meal Monkey Credit Card",
+              subtitle: "Apply for the card and start earning cashbacks!",
+            ),
+            _buildListTile(
+              title: "My Vouchers",
+              subtitle: "Scratch and win exciting vouchers",
+              trailing: const Text("NEW", style: TextStyle(color: Colors.red)),
+            ),
+            _buildListTile(
+              title: "My Account",
+              subtitle: "Favourites, Hidden restaurants & Settings",
+            ),
+            _buildListTile(
+              title: "My Eatlists",
+              subtitle: "View all your saved lists in one place",
+            ),
+            _buildListTile(
+              title: "Addresses",
+              subtitle: "Share, Edit & Add New Addresses",
+            ),
+            _buildListTile(
+              title: "Payments & Refunds",
+              subtitle: "Refund Status & Payment Modes",
+            ),
+            _buildListTile(
+              title: "Meal Monkey Money & Gift Cards",
+              subtitle: "Account balance, Gift cards & Transaction History",
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+              child: const Center(
+                child: Text(
+                  "BROWSE PAST ORDERS",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-// class _ProfileViewState extends State<ProfileView> {
-//   final ImagePicker picker = ImagePicker();
-//   XFile? image;
+  Widget _buildProfileHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "YASH",
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+        const Text(
+          "+91 - 8690642344  •  yasharora9084@gmail.com",
+          style: TextStyle(color: Colors.grey),
+        ),
+        const SizedBox(height: 8),
+        TextButton(
+          onPressed: () {
+            
+            Navigator.push(
+              context,
+              PageTransition(
+                type: PageTransitionType.fade,
+                child: const EditAccountPage(),
+              ),
+            );
+          },
+          child: const Text(
+            "Edit Profile",
+            style: TextStyle(color: Colors.orange),
+          ),
+        ),
+      ],
+    );
+  }
 
-//   TextEditingController txtName = TextEditingController();
-//   TextEditingController txtEmail = TextEditingController();
-//   TextEditingController txtMobile = TextEditingController();
-//   TextEditingController txtAddress = TextEditingController();
-//   TextEditingController txtPassword = TextEditingController();
-//   TextEditingController txtConfirmPassword = TextEditingController();
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//         backgroundColor: Tcolor.white,
-//         body: SingleChildScrollView(
-//           child: Padding(
-//             padding: const EdgeInsets.symmetric(vertical: 20),
-//             child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.center,
-//                 children: [
-//                   const SizedBox(
-//                     height: 46,
-//                   ),
-//                   Padding(
-//                     padding: const EdgeInsets.symmetric(horizontal: 20),
-//                     child: Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                       children: [
-//                         Text(
-//                           "Profile",
-//                           style: TextStyle(
-//                               color: Tcolor.primaryText,
-//                               fontSize: 20,
-//                               fontWeight: FontWeight.w800),
-//                         ),
-//                         IconButton(
-//                           onPressed: () {
-//                             Navigator.push(
-//                                 context,
-//                                 MaterialPageRoute(
-//                                     builder: (context) => const MyOrderView()));
-//                           },
-//                           icon: Image.asset(
-//                             "assets/iimg/shopping_cart.png",
-//                             width: 25,
-//                             height: 25,
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                   const SizedBox(
-//                     height: 20,
-//                   ),
-//                   Container(
-//                     width: 100,
-//                     height: 100,
-//                     decoration: BoxDecoration(
-//                       color: Tcolor.placeholder,
-//                       borderRadius: BorderRadius.circular(50),
-//                     ),
-//                     alignment: Alignment.center,
-//                     child: image != null
-//                         ? ClipRRect(
-//                             borderRadius: BorderRadius.circular(50),
-//                             child: Image.file(File(image!.path),
-//                                 width: 100, height: 100, fit: BoxFit.cover),
-//                           )
-//                         : Icon(
-//                             Icons.person,
-//                             size: 65,
-//                             color: Tcolor.secondaryText,
-//                           ),
-//                   ),
-//                   TextButton.icon(
-//                     onPressed: () async {
-//                       image =
-//                           await picker.pickImage(source: ImageSource.gallery);
-//                       setState(() {});
-//                     },
-//                     icon: Icon(
-//                       Icons.edit,
-//                       color: Tcolor.primary,
-//                       size: 12,
-//                     ),
-//                     label: Text(
-//                       "Edit Profile",
-//                       style: TextStyle(color: Tcolor.primary, fontSize: 12),
-//                     ),
-//                   ),
-//                   Text(
-//                     "Hi there Emilia!",
-//                     style: TextStyle(
-//                         color: Tcolor.primaryText,
-//                         fontSize: 16,
-//                         fontWeight: FontWeight.w700),
-//                   ),
-//                   TextButton(
-//                     onPressed: () {},
-//                     child: Text(
-//                       "Sign Out",
-//                       style: TextStyle(
-//                           color: Tcolor.secondaryText,
-//                           fontSize: 11,
-//                           fontWeight: FontWeight.w500),
-//                     ),
-//                   ),
-//                   const SizedBox(
-//                     height: 20,
-//                   ),
-//                   Padding(
-//                     padding:
-//                         const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-//                     child: RoundTitleTextfield(
-//                       title: "Name",
-//                       hintText: "Enter Name",
-//                       controller: txtName,
-//                     ),
-//                   ),
-//                   Padding(
-//                     padding:
-//                         const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-//                     child: RoundTitleTextfield(
-//                       title: "Email",
-//                       hintText: "Enter Email",
-//                       keyboardType: TextInputType.emailAddress,
-//                       controller: txtEmail,
-//                     ),
-//                   ),
-//                   Padding(
-//                     padding:
-//                         const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-//                     child: RoundTitleTextfield(
-//                       title: "Mobile No",
-//                       hintText: "Enter Mobile No",
-//                       controller: txtMobile,
-//                       keyboardType: TextInputType.phone,
-//                     ),
-//                   ),
-//                   Padding(
-//                     padding:
-//                         const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-//                     child: RoundTitleTextfield(
-//                       title: "Address",
-//                       hintText: "Enter Address",
-//                       controller: txtAddress,
-//                     ),
-//                   ),
-//                   Padding(
-//                     padding:
-//                         const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-//                     child: RoundTitleTextfield(
-//                       title: "Password",
-//                       hintText: "* * * * * *",
-//                       obscureText: true,
-//                       controller: txtPassword,
-//                     ),
-//                   ),
-//                   Padding(
-//                     padding:
-//                         const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-//                     child: RoundTitleTextfield(
-//                       title: "Confirm Password",
-//                       hintText: "* * * * * *",
-//                       obscureText: true,
-//                       controller: txtConfirmPassword,
-//                     ),
-//                   ),
-//                   const SizedBox(
-//                     height: 20,
-//                   ),
-//                   Padding(
-//                     padding: const EdgeInsets.symmetric(horizontal: 20),
-//                     child: RoundButton(text: "Save", onPressed: () {}),
-//                   ),
-//                   const SizedBox(
-//                     height: 20,
-//                   ),
-//                 ]),
-//           ),
-//         ));
-//   }
-// }
+  Widget _buildListTile({
+    required String title,
+    required String subtitle,
+    Widget? trailing,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: ListTile(
+        title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text(subtitle),
+        trailing: trailing,
+      ),
+    );
+  }
+}

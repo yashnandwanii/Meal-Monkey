@@ -17,6 +17,8 @@ class _CheckoutViewState extends State<CheckoutView> {
     {"name": "test@gmail.com", "icon": "assets/iimg/paypal.png"},
   ];
 
+  final location = "Pick Up Address";
+
   int selectMethod = -1;
 
   @override
@@ -78,7 +80,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                       children: [
                         Expanded(
                           child: Text(
-                            "No 12, MG Road, Bangalore",
+                            location.toString(),
                             style: TextStyle(
                                 color: Tcolor.primaryText,
                                 fontSize: 15,
@@ -90,19 +92,14 @@ class _CheckoutViewState extends State<CheckoutView> {
                         ),
                         TextButton(
                           onPressed: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) =>
-                            //           const //ChangeAddressView()),
-                            // );
+                            
                           },
                           child: Text(
-                            "Change",
+                            "Pick",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 color: Tcolor.primary,
-                                fontSize: 13,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w700),
                           ),
                         )
