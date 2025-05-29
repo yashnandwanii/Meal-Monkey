@@ -91,11 +91,11 @@ class _LoginViewState extends State<LoginView> {
                     context.read<MobileAuthprovider>().updateMobileNumber(
                           '$selectedCountry${_phoneController.text.trim()}',
                         );
-                    Mobileauthservices.receiveOtp(
-                      context: context,
-                      phoneNo:
-                          '$selectedCountry${_phoneController.text.trim()}',
-                    );
+                    // Mobileauthservices.receiveOtp(
+                    //   context: context,
+                    //   phoneNo:
+                    //       '$selectedCountry${_phoneController.text.trim()}',
+                    // );
                     Navigator.pop(context);
                     setState(() {
                       recieveOtpButtonPressed = false;
@@ -190,10 +190,10 @@ class _LoginViewState extends State<LoginView> {
               RoundButton(
                 onPressed: () {
                   // Handle OTP verification
-                  Mobileauthservices.verifyOtp(
-                    context: context,
-                    otp: _otpPinFieldController.toString(),
-                  );
+                  // Mobileauthservices.verifyOtp(
+                  //   context: context,
+                  //   otp: _otpPinFieldController.toString(),
+                  // );
                 },
                 text: 'Verify OTP',
               ),
