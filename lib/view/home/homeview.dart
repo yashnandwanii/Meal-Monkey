@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_delivery_app/common/custom_container.dart';
 import 'package:food_delivery_app/common/heading.dart';
-import 'package:food_delivery_app/common_widgets/category_list.dart';
 import 'package:food_delivery_app/common_widgets/custom_appbar.dart';
-import 'package:food_delivery_app/common_widgets/popular_restaurent_row.dart';
-import 'package:food_delivery_app/common_widgets/recent_item_row.dart';
 import 'package:food_delivery_app/view/home/all_fastest_foods.dart';
 import 'package:food_delivery_app/view/home/all_nearby_restaurents.dart';
 import 'package:food_delivery_app/view/home/recommendations.dart';
+import 'package:food_delivery_app/view/home/widgets/category_list.dart';
+import 'package:food_delivery_app/view/home/widgets/food_list.dart';
 import 'package:food_delivery_app/view/home/widgets/nearby_restaurents.dart';
 import 'package:get/get.dart';
 
@@ -20,59 +19,6 @@ class Homeview extends StatefulWidget {
 
 class _HomeviewState extends State<Homeview> {
   TextEditingController txtController = TextEditingController();
-  List popArr = [
-    {
-      'image': 'assets/iimg/res_1.png',
-      'name': 'Minute by Tuk Tuk',
-      'rate': '4.9',
-      'rating': '124',
-      'type': 'Cafa',
-      "food_type": "Western Food"
-    },
-    {
-      'image': 'assets/iimg/res_2.png',
-      'name': 'Cafe de Noir',
-      'rate': '4.9',
-      'rating': '124',
-      'type': 'Cafa',
-      "food_type": "Western Food"
-    },
-    {
-      'image': 'assets/iimg/res_3.png',
-      'name': 'Bakes by Tella',
-      'rate': '4.9',
-      'rating': '124',
-      'type': 'Cafa',
-      "food_type": "Western Food"
-    },
-  ];
-
-  List recentArr = [
-    {
-      'image': 'assets/iimg/item_1.png',
-      'name': 'Mulberry Pizza by Josh',
-      'rate': '4.9',
-      'rating': '124',
-      'type': 'Cafa',
-      "food_type": "Western Food"
-    },
-    {
-      'image': 'assets/iimg/item_2.png',
-      'name': 'Barita',
-      'rate': '4.9',
-      'rating': '124',
-      'type': 'Cafa',
-      "food_type": "Western Food"
-    },
-    {
-      'image': 'assets/iimg/item_3.png',
-      'name': 'Pizza Rush Hour',
-      'rate': '4.9',
-      'rating': '124',
-      'type': 'Cafa',
-      "food_type": "Western Food"
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -107,19 +53,7 @@ class _HomeviewState extends State<Homeview> {
                   );
                 },
               ),
-              ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                itemCount: popArr.length,
-                itemBuilder: ((context, index) {
-                  var pObj = popArr[index] as Map? ?? {};
-                  return PopularRestaurentRow(
-                    pObj: pObj,
-                    onTap: () {},
-                  );
-                }),
-              ),
+              const FoodList(),
               Heading(
                 title: 'Food Closer to you',
                 onTap: () {
@@ -130,19 +64,7 @@ class _HomeviewState extends State<Homeview> {
                   );
                 },
               ),
-              ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                itemCount: recentArr.length,
-                itemBuilder: ((context, index) {
-                  var rObj = recentArr[index] as Map? ?? {};
-                  return RecentItemRow(
-                    rObj: rObj,
-                    onTap: () {},
-                  );
-                }),
-              )
+              const FoodList(),
             ],
           ),
         ),

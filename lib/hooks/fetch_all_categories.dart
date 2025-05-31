@@ -6,8 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-
-FetchHook useFetchCategories() {
+FetchHook useFetchAllCategories() {
   final categories = useState<List<CategoriesModel>?>(null);
   final isLoading = useState<bool>(false);
   final error = useState<Exception?>(null);
@@ -16,11 +15,11 @@ FetchHook useFetchCategories() {
   Future<void> fetchData() async {
     isLoading.value = true;
     try {
-      Uri url = Uri.parse('$appBaseUrl/api/category/random'); 
+      Uri url = Uri.parse('$appBaseUrl/api/category');
       final response = await http.get(url);
-      
+      print('Response status: ${response.statusCode}');
 
-      if(response.statusCode == 200) {
+      if (response.statusCode == 200) {
         categories.value = categoriesModelFromJson(response.body);
       } else if (response.statusCode == 400) {
         apiError.value = ApiError.fromJson(json.decode(response.body));
@@ -28,18 +27,16 @@ FetchHook useFetchCategories() {
       } else {
         throw Exception('Failed to load categories');
       }
-
     } catch (e) {
       error.value = e as Exception;
-    }
-    finally {
+    } finally {
       isLoading.value = false;
     }
   }
 
   useEffect(() {
     fetchData();
-    return null; 
+    return null;
   }, []);
 
   void refetch() {
@@ -51,7 +48,6 @@ FetchHook useFetchCategories() {
     data: categories.value,
     isLoading: isLoading.value,
     error: error.value,
-    
     refetch: refetch,
   );
 }

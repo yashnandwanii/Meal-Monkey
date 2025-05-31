@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/view/home/homeview.dart';
 import 'package:food_delivery_app/view/login/login_view.dart';

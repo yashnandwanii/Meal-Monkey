@@ -18,9 +18,9 @@ class FoodList extends StatelessWidget {
           (i) {
             var food = foods[i];
             return FoodWidget(
-              image: food['image'],
+              image: food['imageUrl'][0],
               time: food['time'],
-              price: food['price'],
+              price: food['price'].toString(),
               title: food['title'],
               ontap: () {
                 print('Tapped on ${food['title']}');

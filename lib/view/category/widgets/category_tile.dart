@@ -26,12 +26,12 @@ class CategoryTile extends StatelessWidget {
         radius: 18.r,
         backgroundColor: Colors.white54,
         child: Image.network(
-          category['imageUrl'],
+          category.imageUrl,
           fit: BoxFit.contain,
         ),
       ),
       title: ReusableText(
-        text: category['title'],
+        text: category.title,
       ),
       contentPadding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
       shape: RoundedRectangleBorder(

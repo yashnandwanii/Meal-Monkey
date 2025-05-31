@@ -1,27 +1,29 @@
+// ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_delivery_app/controllers/category_controller.dart';
+import 'package:food_delivery_app/models/categories.dart';
 import 'package:food_delivery_app/view/category/all_categories.dart';
 import 'package:get/get.dart';
 
 class CategoryWidget extends StatelessWidget {
-  const CategoryWidget({
+  CategoryWidget({
     super.key,
     required this.category,
   });
 
-  final dynamic category;
+  CategoriesModel category;
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(CategoryController());
     return GestureDetector(
       onTap: () {
-        if (controller.categoryValue != category['_id']) {
-          controller.updateCategory = category['_id'];
-          controller.updateTitle = category['title'];
-        } else if (category['value'] == 'more') {
+        if (controller.categoryValue != category.id) {
+          controller.updateCategory = category.id;
+          controller.updateTitle = category.title;
+        } else if (category.value == 'more') {
           Get.to(
             () => const AllCategories(),
             transition: Transition.rightToLeft,
@@ -40,7 +42,7 @@ class CategoryWidget extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.r),
             border: Border.all(
-              color: controller.categoryValue == category['_id']
+              color: controller.categoryValue == category.id
                   ? Colors.orange
                   : const Color(0xFFBDBDBD),
               width: 1.w,
@@ -50,13 +52,13 @@ class CategoryWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.network(
-                category['imageUrl'],
+                category.imageUrl,
                 height: 35.h,
                 fit: BoxFit.cover,
               ),
               SizedBox(height: 4.h),
               Text(
-                category['title'],
+                category.title,
                 style: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w500,
