@@ -13,16 +13,18 @@ class ShimmerWidget extends StatelessWidget {
   final double shimmerHeight;
   final double shimmerRadius;
 
+  static const Color primaryColor = Color(0xffFC6011);
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: shimmerWidth,
       height: shimmerHeight,
-      padding: const EdgeInsets.only(right: 12, top: 8),
+      margin: const EdgeInsets.only(right: 12, top: 8),
       child: _buildShimmerEffect(
-        height: shimmerHeight - 20,
-        width: shimmerWidth - 15,
-        radius: shimmerRadius - 5,
+        width: shimmerWidth,
+        height: shimmerHeight,
+        radius: shimmerRadius,
       ),
     );
   }
@@ -33,14 +35,25 @@ class ShimmerWidget extends StatelessWidget {
     required double radius,
   }) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: primaryColor.withOpacity(0.3), // Slightly transparent base
+      highlightColor: primaryColor.withOpacity(0.7), // Stronger highlight
+      period: const Duration(seconds: 2), // Slower shimmer for elegance
+      direction: ShimmerDirection.ltr, // Horizontal shimmer direction
       child: Container(
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: Colors.white24,
+          color: Colors.white.withOpacity(0.2), // subtle background
           borderRadius: BorderRadius.circular(radius),
+          gradient: LinearGradient(
+            colors: [
+              Colors.white.withOpacity(0.15),
+              primaryColor.withOpacity(0.3),
+              Colors.white.withOpacity(0.15),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
         ),
       ),
     );

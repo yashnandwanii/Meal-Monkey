@@ -16,13 +16,13 @@ class CategoryList extends HookWidget {
 
     final isLoading = hookResult.isLoading;
     //final error = hookResult.error;
-    return Container(
-      height: 80.h,
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.only(left: 12.w, top: 10.h),
-      child: isLoading == true
-          ? const CategoriesShimmer()
-          : ListView(
+    return isLoading == true
+        ? const CategoriesShimmer()
+        : Container(
+            height: 80.h,
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.only(left: 12.w, top: 10.h),
+            child: ListView(
               scrollDirection: Axis.horizontal,
               children: List.generate(
                 categories!.length,
@@ -32,6 +32,6 @@ class CategoryList extends HookWidget {
                 },
               ),
             ),
-    );
+          );
   }
 }

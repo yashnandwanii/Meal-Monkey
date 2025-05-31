@@ -7,20 +7,19 @@ class CategoriesShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 75,
+      height: 90, // slightly more than 70 to avoid tight layout
       padding: const EdgeInsets.only(left: 12, top: 10),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 5, // Number of shimmer items
+        itemCount: 5,
         itemBuilder: (context, index) {
-          return const Column(
-            children: [
-              ShimmerWidget(
-                shimmerWidth: 70, // Width of each shimmer item
-                shimmerHeight: 70, // Height of each shimmer item
-                shimmerRadius: 12, // Border radius for the shimmer item
-              ),
-            ],
+          return const Padding(
+            padding: EdgeInsets.only(right: 12), // add spacing
+            child: ShimmerWidget(
+              shimmerWidth: 70,
+              shimmerHeight: 70,
+              shimmerRadius: 12,
+            ),
           );
         },
       ),

@@ -1,13 +1,13 @@
 import 'package:food_delivery_app/common/constants.dart';
-import 'package:food_delivery_app/models/categories.dart';
 import 'package:food_delivery_app/models/api_error.dart';
 import 'package:food_delivery_app/models/hook_models/hook_result.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:food_delivery_app/models/restaurents.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-FetchHook useFetchAllCategories() {
-  final categories = useState<List<CategoriesModel>?>(null);
+FetchHook usefetchRestaurents(String code) {
+  final restaurents = useState<List<RestaurentsModel>?>(null);
   final isLoading = useState<bool>(false);
   final error = useState<Exception?>(null);
   final apiError = useState<ApiError?>(null);
@@ -15,12 +15,11 @@ FetchHook useFetchAllCategories() {
   Future<void> fetchData() async {
     isLoading.value = true;
     try {
-      Uri url = Uri.parse('$appBaseUrl/api/category');
+      Uri url = Uri.parse('$appBaseUrl/api/restaurent/$code');
       final response = await http.get(url);
-      
 
       if (response.statusCode == 200) {
-        categories.value = categoriesModelFromJson(response.body);
+        restaurents.value = restaurentsModelFromJson(response.body);
       } else if (response.statusCode == 400) {
         apiError.value = ApiError.fromJson(json.decode(response.body));
         error.value = null;
@@ -45,7 +44,7 @@ FetchHook useFetchAllCategories() {
   }
 
   return FetchHook(
-    data: categories.value,
+    data: restaurents.value,
     isLoading: isLoading.value,
     error: error.value,
     refetch: refetch,

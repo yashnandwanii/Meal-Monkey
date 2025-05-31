@@ -8,7 +8,7 @@ import 'package:food_delivery_app/view/home/all_nearby_restaurents.dart';
 import 'package:food_delivery_app/view/home/recommendations.dart';
 import 'package:food_delivery_app/view/home/widgets/category_list.dart';
 import 'package:food_delivery_app/view/home/widgets/food_list.dart';
-import 'package:food_delivery_app/view/home/widgets/nearby_restaurents.dart';
+import 'package:food_delivery_app/view/home/widgets/nearby_restaurents_list.dart';
 import 'package:get/get.dart';
 
 class Homeview extends StatefulWidget {
