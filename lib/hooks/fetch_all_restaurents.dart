@@ -6,7 +6,7 @@ import 'package:food_delivery_app/models/restaurents.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-FetchHook usefetchRestaurents(String code) {
+FetchHook useFetchAllRestaurents(String code) {
   final restaurents = useState<List<RestaurentsModel>?>(null);
   final isLoading = useState<bool>(false);
   final error = useState<Exception?>(null);

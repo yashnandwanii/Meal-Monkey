@@ -4,11 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_delivery_app/common/app_style.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common/reusable_text.dart';
+import 'package:food_delivery_app/models/restaurents.dart';
 
 class RestaurentTile extends StatelessWidget {
   const RestaurentTile({super.key, required this.restaurant});
 
-  final dynamic restaurant;
+  final RestaurentsModel restaurant;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class RestaurentTile extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             height: 70.h,
             decoration: BoxDecoration(
-              color: Colors.white60,
+              color: Colors.grey.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(9.r),
             ),
             child: Container(
@@ -37,7 +38,7 @@ class RestaurentTile extends StatelessWidget {
                           height: 70.h,
                           width: 70.w,
                           child: Image.network(
-                            restaurant['imageUrl'],
+                            restaurant.imageUrl,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -75,7 +76,7 @@ class RestaurentTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ReusableText(
-                        text: restaurant['title'],
+                        text: restaurant.title,
                         style: appBarTextStyle(
                           11,
                           Colors.black,
@@ -83,20 +84,20 @@ class RestaurentTile extends StatelessWidget {
                         ),
                       ),
                       ReusableText(
-                        text: "Delivery Time: ${restaurant['time']} min",
+                        text: "Delivery Time: ${restaurant.time} min",
                         style: appBarTextStyle(
                           11,
-                          Colors.grey,
+                          Colors.black54,
                           FontWeight.w400,
                         ),
                       ),
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.7,
                         child: Text(
-                          restaurant['coords']['address'] ?? '',
+                          restaurant.coords.address,
                           style: appBarTextStyle(
                             9,
-                            Colors.grey,
+                            Colors.black45,
                             FontWeight.w400,
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -115,18 +116,14 @@ class RestaurentTile extends StatelessWidget {
               width: 60.w,
               height: 19.h,
               decoration: BoxDecoration(
-                color: restaurant['isAvailable'] == true ||
-                        restaurant['isAvailable'] == null
+                color: restaurant.isAvailable == true
                     ? Colors.lightGreen
                     : Colors.grey,
                 borderRadius: BorderRadius.circular(10.r),
               ),
               child: Center(
                 child: ReusableText(
-                  text: restaurant['isAvailable'] == true ||
-                          restaurant['isAvailable'] == null
-                      ? "Open"
-                      : "Closed",
+                  text: restaurant.isAvailable == true ? "Open" : "Closed",
                   style: appBarTextStyle(
                     12,
                     Colors.white,
