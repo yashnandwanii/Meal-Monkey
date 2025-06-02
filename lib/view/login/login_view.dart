@@ -3,13 +3,11 @@ import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common_widgets/round_button.dart';
 import 'package:food_delivery_app/common_widgets/round_icon_button.dart';
 import 'package:food_delivery_app/common_widgets/round_textfield.dart';
-import 'package:food_delivery_app/controllers/provider/authProvider/auth_provider.dart';
 import 'package:food_delivery_app/view/login/reset_password.dart';
 import 'package:food_delivery_app/view/login/signup_view.dart';
 import 'package:food_delivery_app/view/on_boarding/on_boarding_view.dart';
 
 import 'package:otp_pin_field/otp_pin_field.dart';
-import 'package:provider/provider.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -87,9 +85,7 @@ class _LoginViewState extends State<LoginView> {
                     setState(() {
                       recieveOtpButtonPressed = true;
                     });
-                    context.read<MobileAuthprovider>().updateMobileNumber(
-                          '$selectedCountry${_phoneController.text.trim()}',
-                        );
+                    
                     // Mobileauthservices.receiveOtp(
                     //   context: context,
                     //   phoneNo:
