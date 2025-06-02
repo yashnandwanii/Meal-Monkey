@@ -67,12 +67,12 @@ class _MainTabviewState extends State<MainTabview> {
                 onTap: () {
                   if (selectTab != 0) {
                     selectTab = 0;
-                    selectPageView = const MenuView();
+                    selectPageView = MenuView();
                   }
                   if (mounted) {
                     setState(() {
                       selectTab = 0;
-                      selectPageView = const MenuView();
+                      selectPageView = MenuView();
                     });
                   }
                 },
@@ -84,12 +84,12 @@ class _MainTabviewState extends State<MainTabview> {
                 onTap: () {
                   if (selectTab != 1) {
                     selectTab = 1;
-                    selectPageView = const OfferView();
+                    selectPageView = OfferView();
                   }
                   if (mounted) {
                     setState(() {
                       selectTab = 1;
-                      selectPageView = const OfferView();
+                      selectPageView = OfferView();
                     });
                   }
                 },

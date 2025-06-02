@@ -1,11 +1,15 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
-import 'package:food_delivery_app/common_widgets/round_textfield.dart';
+import 'package:food_delivery_app/common/custom_search_field.dart';
 import 'package:food_delivery_app/view/menu/menu_items_view.dart';
 import 'package:food_delivery_app/view/more/my_order_view.dart';
 
 class MenuView extends StatefulWidget {
-  const MenuView({super.key});
+  MenuView({super.key});
 
   @override
   State<MenuView> createState() => _MenuViewState();
@@ -13,6 +17,7 @@ class MenuView extends StatefulWidget {
 
 class _MenuViewState extends State<MenuView> {
   TextEditingController txtSearch = TextEditingController();
+
   List menuArr = [
     {
       'name': 'Food',
@@ -99,21 +104,30 @@ class _MenuViewState extends State<MenuView> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: RoundTextfield(
-                      hintText: 'Search Food',
-                      controller: txtSearch,
-                      left: Container(
-                        alignment: Alignment.center,
-                        width: 30,
-                        child: Image.asset(
-                          'assets/iimg/search.png',
-                          width: 20,
-                          height: 20,
-                        ),
+                  CustomSearchField(
+                    controller: txtSearch,
+                    hintText: 'Search for menu items',
+                    obscureText: false,
+                    onEditingComplete: () {
+                      // Implement search functionality here
+                    },
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        // Implement search functionality here
+                      },
+                      child: Icon(
+                        Ionicons.search_circle,
+                        color: Tcolor.primaryText,
+                        size: 40.h,
                       ),
                     ),
+                    keyboardType: TextInputType.text,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a search term';
+                      }
+                      return null;
+                    },
                   ),
                   const SizedBox(
                     height: 30,

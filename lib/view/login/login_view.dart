@@ -161,7 +161,9 @@ class _LoginViewState extends State<LoginView> {
               SizedBox(
                 height: 60,
                 child: OtpPinField(
-                  onChange: (text) => print(text),
+                  onChange: (text) {
+                    // Handle OTP change
+                  },
                   key: _otpPinFieldController,
                   autoFillEnable: false,
                   textInputAction: TextInputAction.done,

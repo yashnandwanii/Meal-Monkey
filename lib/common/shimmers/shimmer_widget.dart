@@ -35,15 +35,15 @@ class ShimmerWidget extends StatelessWidget {
     required double radius,
   }) {
     return Shimmer.fromColors(
-      baseColor: primaryColor.withOpacity(0.3),
-      highlightColor: primaryColor.withOpacity(0.7),
+      baseColor: primaryColor.withValues(alpha: 0.3),
+      highlightColor: primaryColor.withValues(alpha: 0.7),
       period: const Duration(seconds: 2),
       direction: ShimmerDirection.ltr,
       child: Container(
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(radius),
         ),
       ),

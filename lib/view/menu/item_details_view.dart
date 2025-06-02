@@ -37,8 +37,8 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.black.withOpacity(0.5),
-                  Colors.black.withOpacity(0.1),
+                  Colors.black.withValues(alpha: 0.5),
+                  Colors.black.withValues(alpha: 0.1),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -108,7 +108,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                         color: Tcolor.primary,
                                       ),
                                       onRatingUpdate: (rating) {
-                                        print(rating);
+                                        // Do nothing, as this is read-only;
                                       },
                                     ),
                                   ),
@@ -256,7 +256,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                           height: 15,
                         ),
                         Divider(
-                          color: Tcolor.secondaryText.withOpacity(0.4),
+                          color: Tcolor.secondaryText.withValues(alpha: 0.4),
                           thickness: 1,
                         ),
                         const SizedBox(

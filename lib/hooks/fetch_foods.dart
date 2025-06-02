@@ -1,12 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:food_delivery_app/common/constants.dart';
 import 'package:food_delivery_app/models/api_error.dart';
 import 'package:food_delivery_app/models/foods.dart';
-import 'package:food_delivery_app/models/hook_models/hook_result.dart';
+import 'package:food_delivery_app/models/hook_models/hook_foods.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-FetchHook useFetchFoods(String code) {
+FetchFoods useFetchFoods(String code) {
   final foods = useState<List<FoodItem>?>(null);
   final isLoading = useState<bool>(false);
   final error = useState<Exception?>(null);
@@ -25,10 +26,10 @@ FetchHook useFetchFoods(String code) {
         apiError.value = ApiError.fromJson(json.decode(response.body));
         error.value = null;
       } else {
-        print('Error: ${response.statusCode}');
+        debugPrint('Error: ${response.statusCode}');
       }
     } catch (e) {
-      print('Exception: $e');
+      //print('Exception: $e');
       error.value = e as Exception;
     } finally {
       isLoading.value = false;
@@ -45,7 +46,7 @@ FetchHook useFetchFoods(String code) {
     fetchData();
   }
 
-  return FetchHook(
+  return FetchFoods(
     data: foods.value,
     isLoading: isLoading.value,
     error: error.value,

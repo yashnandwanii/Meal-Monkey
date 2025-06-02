@@ -160,7 +160,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                                 borderRadius: BorderRadius.circular(5),
                                 border: Border.all(
                                     color:
-                                        Tcolor.secondaryText.withOpacity(0.2))),
+                                        Tcolor.secondaryText.withValues(alpha: 0.2))),
                             child: Row(
                               children: [
                                 Image.asset(pObj["icon"].toString(),
@@ -282,7 +282,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                       height: 15,
                     ),
                     Divider(
-                      color: Tcolor.secondaryText.withOpacity(0.5),
+                      color: Tcolor.secondaryText.withValues(alpha: 0.5),
                       height: 1,
                     ),
                     const SizedBox(

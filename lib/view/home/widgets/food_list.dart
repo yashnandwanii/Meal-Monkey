@@ -32,7 +32,7 @@ class FoodList extends HookWidget {
                     height: 184.h,
                     margin: const EdgeInsets.only(left: 12, top: 10),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                   );

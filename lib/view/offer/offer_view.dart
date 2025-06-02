@@ -1,74 +1,26 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
-
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
-import 'package:food_delivery_app/common_widgets/popular_restaurent_row.dart';
+import 'package:food_delivery_app/common/shimmers/nearby_shimmer.dart';
 import 'package:food_delivery_app/common_widgets/round_button.dart';
-import 'package:food_delivery_app/view/menu/item_details_view.dart';
+import 'package:food_delivery_app/hooks/fetch_all_restaurents.dart';
+import 'package:food_delivery_app/models/restaurents.dart';
 import 'package:food_delivery_app/view/more/my_order_view.dart';
+import 'package:food_delivery_app/view/offer/offer_widget.dart';
 
-class OfferView extends StatefulWidget {
-  const OfferView({super.key});
+class OfferView extends HookWidget {
+  OfferView({super.key});
 
-  @override
-  State<OfferView> createState() => _OfferViewState();
-}
-
-class _OfferViewState extends State<OfferView> {
   TextEditingController txtSearch = TextEditingController();
-
-  List offerArr = [
-    {
-      "image": "assets/iimg/offer_1.png",
-      "name": "Café de Noires",
-      "rate": "4.9",
-      "rating": "124",
-      "type": "Cafa",
-      "food_type": "Western Food"
-    },
-    {
-      "image": "assets/iimg/offer_2.png",
-      "name": "Isso",
-      "rate": "4.9",
-      "rating": "124",
-      "type": "Cafa",
-      "food_type": "Western Food"
-    },
-    {
-      "image": "assets/iimg/offer_3.png",
-      "name": "Cafe Beans",
-      "rate": "4.9",
-      "rating": "124",
-      "type": "Cafa",
-      "food_type": "Western Food"
-    },
-    {
-      "image": "assets/iimg/offer_1.png",
-      "name": "Café de Noires",
-      "rate": "4.9",
-      "rating": "124",
-      "type": "Cafa",
-      "food_type": "Western Food"
-    },
-    {
-      "image": "assets/iimg/offer_2.png",
-      "name": "Isso",
-      "rate": "4.9",
-      "rating": "124",
-      "type": "Cafa",
-      "food_type": "Western Food"
-    },
-    {
-      "image": "assets/iimg/offer_3.png",
-      "name": "Cafe Beans",
-      "rate": "4.9",
-      "rating": "124",
-      "type": "Cafa",
-      "food_type": "Western Food"
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
+    final hookResults = useFetchAllRestaurents('41007428');
+    List<RestaurentsModel>? restaurents = hookResults.data;
+    final isLoading = hookResults.isLoading;
     return Scaffold(
       backgroundColor: Tcolor.white,
       body: SingleChildScrollView(
@@ -137,24 +89,29 @@ class _OfferViewState extends State<OfferView> {
               const SizedBox(
                 height: 15,
               ),
-              ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                itemCount: offerArr.length,
-                itemBuilder: ((context, index) {
-                  var pObj = offerArr[index] as Map? ?? {};
-                  return PopularRestaurentRow(
-                    pObj: pObj,
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return const ItemDetailsView();
-                      }));
-                    },
-                  );
-                }),
-              ),
+              isLoading
+                  ? const NearbyShimmer()
+                  : Container(
+                      height: MediaQuery.of(context).size.height * 0.75,
+                      padding: EdgeInsets.only(left: 12.w, top: 10.h),
+                      width: double.infinity,
+                      child: ListView(
+                        scrollDirection: Axis.vertical,
+                        children: List.generate(
+                          restaurents!.length,
+                          (i) {
+                            RestaurentsModel restaurent = restaurents[i];
+                            return OfferWidget(
+                              image: restaurent.imageUrl,
+                              logo: restaurent.logoUrl,
+                              title: restaurent.title,
+                              time: restaurent.time,
+                              rating: restaurent.ratingCount,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
             ],
           ),
         ),
