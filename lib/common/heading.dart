@@ -6,9 +6,10 @@ import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common/reusable_text.dart';
 
 class Heading extends StatelessWidget {
-  const Heading({super.key, required this.title, this.onTap});
+  const Heading({super.key, required this.title, this.onTap, this.moreButton});
   final String title;
   final VoidCallback? onTap;
+  final bool? moreButton;
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +25,16 @@ class Heading extends StatelessWidget {
               style: appBarTextStyle(16, Colors.black, FontWeight.bold),
             ),
           ),
-          GestureDetector(
-            onTap: onTap,
-            child: Icon(
-              AntDesign.appstore1,
-              size: 20.sp,
-              color: Tcolor.primary,
-            ),
-          ),
+          moreButton == null
+              ? GestureDetector(
+                  onTap: onTap,
+                  child: Icon(
+                    AntDesign.appstore1,
+                    size: 20.sp,
+                    color: Tcolor.primary,
+                  ),
+                )
+              : const SizedBox.shrink()
         ],
       ),
     );

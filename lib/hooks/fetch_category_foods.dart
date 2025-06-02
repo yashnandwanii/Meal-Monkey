@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:food_delivery_app/common/constants.dart';
+import 'package:food_delivery_app/controllers/category_controller.dart';
 import 'package:food_delivery_app/models/api_error.dart';
 import 'package:food_delivery_app/models/foods.dart';
 import 'package:food_delivery_app/models/hook_models/hook_foods.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-FetchFoods useFetchFoods(String code) {
+FetchFoods useFetchCategoryFoods(String code) {
+  final controller = Get.put(CategoryController());
   final foods = useState<List<FoodItem>?>(null);
   final isLoading = useState<bool>(false);
   final error = useState<Exception?>(null);
@@ -16,7 +19,9 @@ FetchFoods useFetchFoods(String code) {
   Future<void> fetchData() async {
     isLoading.value = true;
     try {
-      Uri url = Uri.parse('$appBaseUrl/api/food/recommendation/$code');
+      Uri url =
+          Uri.parse('$appBaseUrl/api/food/${controller.categoryValue}/$code');
+      print(controller.categoryValue);
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
@@ -37,9 +42,6 @@ FetchFoods useFetchFoods(String code) {
   }
 
   useEffect(() {
-    Future.delayed(
-      const Duration(seconds: 3),
-    );
     fetchData();
     return null;
   }, []);

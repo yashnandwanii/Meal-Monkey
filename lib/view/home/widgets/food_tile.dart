@@ -10,9 +10,10 @@ import 'package:food_delivery_app/common/reusable_text.dart';
 import 'package:food_delivery_app/models/foods.dart';
 
 class FoodTile extends StatelessWidget {
-  FoodTile({super.key, required this.food});
+  FoodTile({super.key, required this.food, this.color});
 
   FoodItem food;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class FoodTile extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             height: 70.h,
             decoration: BoxDecoration(
-              color: Colors.grey.withValues(alpha: 0.3),
+              color: color ?? Colors.grey.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(9.r),
             ),
             child: Container(
