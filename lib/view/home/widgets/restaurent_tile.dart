@@ -5,6 +5,8 @@ import 'package:food_delivery_app/common/app_style.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common/reusable_text.dart';
 import 'package:food_delivery_app/models/restaurents.dart';
+import 'package:food_delivery_app/view/restaurent/restaurent_page.dart';
+import 'package:get/get.dart';
 
 class RestaurentTile extends StatelessWidget {
   const RestaurentTile({super.key, required this.restaurant});
@@ -14,7 +16,12 @@ class RestaurentTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Get.to(
+          () => RestaurentPage(restaurent: restaurant),
+          transition: Transition.rightToLeft,
+        );
+      },
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [

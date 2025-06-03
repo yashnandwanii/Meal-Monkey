@@ -3,7 +3,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_delivery_app/hooks/fetch_foods.dart';
 import 'package:food_delivery_app/models/foods.dart';
+import 'package:food_delivery_app/view/food/food_page.dart';
 import 'package:food_delivery_app/view/home/widgets/food_widget.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 class FoodList extends HookWidget {
@@ -51,7 +53,13 @@ class FoodList extends HookWidget {
                     time: food.time,
                     price: food.price.toString(),
                     title: food.title,
-                    ontap: () {},
+                    ontap: () {
+                      Get.to(
+                        () => FoodPage(food: food),
+                        transition: Transition.rightToLeft,
+                        duration: const Duration(milliseconds: 500),
+                      );
+                    },
                   );
                 },
               ),

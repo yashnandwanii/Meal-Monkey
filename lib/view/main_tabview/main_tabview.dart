@@ -67,12 +67,12 @@ class _MainTabviewState extends State<MainTabview> {
                 onTap: () {
                   if (selectTab != 0) {
                     selectTab = 0;
-                    selectPageView = MenuView();
+                    selectPageView = const MenuView();
                   }
                   if (mounted) {
                     setState(() {
                       selectTab = 0;
-                      selectPageView = MenuView();
+                      selectPageView = const MenuView();
                     });
                   }
                 },

@@ -4,6 +4,7 @@ import 'package:food_delivery_app/routes/routes.dart';
 import 'package:get/get.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

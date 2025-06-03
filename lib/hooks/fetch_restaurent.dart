@@ -1,17 +1,14 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:food_delivery_app/common/constants.dart';
-import 'package:food_delivery_app/controllers/category_controller.dart';
 import 'package:food_delivery_app/models/api_error.dart';
-import 'package:food_delivery_app/models/foods.dart';
-import 'package:food_delivery_app/models/hook_models/hook_foods.dart';
+import 'package:food_delivery_app/models/hook_models/hook_restaurent.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:get/get.dart';
+import 'package:food_delivery_app/models/restaurents.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-FetchFoods useFetchCategoryFoods(String code) {
-  final controller = Get.put(CategoryController());
-  final foods = useState<List<FoodItem>?>(null);
+FetchRestaurent usefetchRestaurent(String code) {
+  final restaurents = useState<RestaurentsModel?>(null);
   final isLoading = useState<bool>(false);
   final error = useState<Exception?>(null);
   final apiError = useState<ApiError?>(null);
@@ -19,22 +16,20 @@ FetchFoods useFetchCategoryFoods(String code) {
   Future<void> fetchData() async {
     isLoading.value = true;
     try {
-      Uri url =
-          Uri.parse('$appBaseUrl/api/food/${controller.categoryValue}/$code');
-
+      Uri url = Uri.parse('$appBaseUrl/api/restaurent/byId/$code');
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        //foods.value = foodsModelFromJson(response.body);
-        foods.value = foodItemFromJson(response.body);
+        restaurents.value =
+            RestaurentsModel.fromJson(json.decode(response.body));
       } else if (response.statusCode == 400) {
         apiError.value = ApiError.fromJson(json.decode(response.body));
         error.value = null;
       } else {
-        debugPrint('Error: ${response.statusCode}');
+        throw Exception('Failed to load categories');
       }
     } catch (e) {
-      //print('Exception: $e');
+      debugPrint('Error fetching restaurents: $e');
       error.value = e as Exception;
     } finally {
       isLoading.value = false;
@@ -51,8 +46,8 @@ FetchFoods useFetchCategoryFoods(String code) {
     fetchData();
   }
 
-  return FetchFoods(
-    data: foods.value,
+  return FetchRestaurent(
+    data: restaurents.value,
     isLoading: isLoading.value,
     error: error.value,
     refetch: refetch,

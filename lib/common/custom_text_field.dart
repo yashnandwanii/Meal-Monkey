@@ -13,6 +13,7 @@ class CustomSearchField extends StatelessWidget {
     this.prefixIcon,
     this.validator,
     this.hintText,
+    this.maxLines = 1,
   });
 
   final TextEditingController? controller;
@@ -23,6 +24,7 @@ class CustomSearchField extends StatelessWidget {
   final Widget? prefixIcon;
   final String? hintText;
   final String? Function(String?)? validator;
+  final double? maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,7 @@ class CustomSearchField extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: TextFormField(
+        maxLines: maxLines?.toInt(),
         controller: controller,
         onEditingComplete: onEditingComplete,
         keyboardType: keyboardType,

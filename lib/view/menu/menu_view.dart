@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
-import 'package:food_delivery_app/common/custom_search_field.dart';
+import 'package:food_delivery_app/common/custom_text_field.dart';
 import 'package:food_delivery_app/controllers/search_controller.dart';
 import 'package:food_delivery_app/view/menu/menu_items_view.dart';
 import 'package:food_delivery_app/view/menu/search_results.dart';
@@ -71,7 +71,7 @@ class _MenuViewState extends State<MenuView> {
                       fontWeight: FontWeight.w800,
                     ),
                   ),
-                  const Spacer(),
+                  
                   IconButton(
                     onPressed: () {
                       Navigator.push(
