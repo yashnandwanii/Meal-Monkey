@@ -76,14 +76,18 @@ class _HomeviewState extends State<Homeview> {
                         const FoodList(),
                       ],
                     );
-                  } else if (controller.categoryValue == 'more') {
+                  } else if (controller.titleValue == 'more' ||
+                      controller.categoryValue == 'more' ||
+                      controller.titleValue == 'More') {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       Get.to(
-                        () => const AllCategories(),
-                        transition: Transition.rightToLeft,
-                        duration: const Duration(milliseconds: 500),
-                      );
+                          () => const AllCategories()); // or your target screen
                     });
+                    Future.delayed(Duration.zero, () {
+                      controller.updateCategory = '';
+                      controller.updateTitle = '';
+                    });
+
                     return const SizedBox.shrink();
                   } else {
                     return CustomContainer(

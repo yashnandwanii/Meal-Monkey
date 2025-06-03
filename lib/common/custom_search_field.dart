@@ -36,24 +36,23 @@ class CustomSearchField extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(12.r),
       ),
-      child: Center(
-        child: TextFormField(
-          controller: controller,
-          onEditingComplete: onEditingComplete,
-          keyboardType: keyboardType,
-          style: appBarTextStyle(11, Colors.black54, FontWeight.normal),
-          validator: validator,
-          obscureText: obscureText ?? false,
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: hintText,
-            hintStyle: TextStyle(
-              fontSize: 11.sp,
-              color: Colors.black.withValues(alpha: 0.7),
-            ),
-            suffixIcon: suffixIcon,
-            prefixIcon: prefixIcon,
+      child: TextFormField(
+        controller: controller,
+        onEditingComplete: onEditingComplete,
+        keyboardType: keyboardType,
+        style: appBarTextStyle(11, Colors.black54, FontWeight.normal),
+        validator: validator,
+        obscureText: obscureText ?? false,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: hintText,
+          hintStyle: TextStyle(
+            fontSize: 11.sp,
+            color: Colors.black.withValues(alpha: 0.7),
           ),
+          suffixIcon: suffixIcon,
+          prefixIcon: prefixIcon,
+          contentPadding: EdgeInsets.symmetric(vertical: 14.h),
         ),
       ),
     );

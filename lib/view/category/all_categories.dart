@@ -20,7 +20,17 @@ class AllCategories extends HookWidget {
       appBar: AppBar(
         title: const ReusableText(text: 'All Categories'),
         elevation: 0,
-        backgroundColor: Colors.white54,
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.black.withValues(alpha: 0.8),
+            size: 20.r,
+          ),
+        ),
       ),
       body: BackgroundContainer(
         color: Colors.white,

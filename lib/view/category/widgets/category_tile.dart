@@ -22,8 +22,7 @@ class CategoryTile extends StatelessWidget {
         controller.updateTitle = category.title;
         Get.to(
           () => const CategoryPage(),
-          transition: Transition.rightToLeftWithFade,
-          duration: const Duration(milliseconds: 900),
+          transition: Transition.rightToLeft,
         );
       },
       leading: CircleAvatar(

@@ -14,6 +14,7 @@ class NearbyRestaurents extends HookWidget {
     final hookResults = useFetchAllRestaurents('41007428');
     List<RestaurentsModel>? restaurents = hookResults.data;
     final isLoading = hookResults.isLoading;
+
     return isLoading
         ? const NearbyShimmer()
         : Container(
