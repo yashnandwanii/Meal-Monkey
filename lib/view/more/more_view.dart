@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
+import 'package:food_delivery_app/common_widgets/general_app_bar.dart';
 import 'package:food_delivery_app/view/more/about_us_view.dart';
 import 'package:food_delivery_app/view/more/inbox_view.dart';
 import 'package:food_delivery_app/view/more/my_order_view.dart';
@@ -56,6 +58,10 @@ class _MoreViewState extends State<MoreView> {
     final media = MediaQuery.of(context).size;
 
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(40.h),
+        child: const GeneralAppBar(title: 'More'),
+      ),
       backgroundColor: Tcolor.white,
       body: SingleChildScrollView(
         child: Padding(
@@ -63,8 +69,6 @@ class _MoreViewState extends State<MoreView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 46),
-              _buildHeader(context),
               ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -83,40 +87,6 @@ class _MoreViewState extends State<MoreView> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "More",
-            style: TextStyle(
-              color: Tcolor.primaryText,
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const MyOrderView(),
-                ),
-              );
-            },
-            icon: Image.asset(
-              "assets/iimg/shopping_cart.png",
-              width: 25,
-              height: 25,
-            ),
-          ),
-        ],
       ),
     );
   }

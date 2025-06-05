@@ -4,6 +4,7 @@ import 'package:food_delivery_app/common_widgets/round_button.dart';
 import 'package:food_delivery_app/common_widgets/round_textfield.dart';
 
 import 'package:food_delivery_app/view/login/login_view.dart';
+import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SignupView extends StatefulWidget {
@@ -49,13 +50,15 @@ class _SignupViewState extends State<SignupView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 70),
-                Text(
-                  'Sign Up',
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: Tcolor.primaryText,
-                    fontWeight: FontWeight.w800,
+                Container(
+                  width: 250,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: Lottie.asset(
+                    'assets/signup.json',
+                    fit: BoxFit.cover,
                   ),
                 ),
                 Text(

@@ -10,7 +10,7 @@ class DirectionsPage extends StatelessWidget {
         title: const Text('Directions'),
         centerTitle: true,
       ),
-      body: Center(
+      body: const Center(
         child: Text(
           'Directions will be displayed here.',
           style: TextStyle(fontSize: 20, color: Colors.black54),

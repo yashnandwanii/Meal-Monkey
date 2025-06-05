@@ -6,8 +6,10 @@ import 'package:food_delivery_app/common_widgets/round_textfield.dart';
 import 'package:food_delivery_app/view/login/reset_password.dart';
 import 'package:food_delivery_app/view/login/signup_view.dart';
 import 'package:food_delivery_app/view/on_boarding/on_boarding_view.dart';
+import 'package:get/get.dart';
 
 import 'package:otp_pin_field/otp_pin_field.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -85,7 +87,7 @@ class _LoginViewState extends State<LoginView> {
                     setState(() {
                       recieveOtpButtonPressed = true;
                     });
-                    
+
                     // Mobileauthservices.receiveOtp(
                     //   context: context,
                     //   phoneNo:
@@ -244,24 +246,25 @@ class _LoginViewState extends State<LoginView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 70),
-              Text(
-                'Log In',
-                style: TextStyle(
-                  fontSize: 30,
-                  color: Tcolor.primaryText,
-                  fontWeight: FontWeight.w800,
+              Container(
+                width: 250,
+                height: 250,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+                child: Lottie.asset(
+                  'assets/login.json',
                 ),
               ),
               Text(
-                'Add your details to login',
+                'Enter your details to login credentials',
                 style: TextStyle(
                   fontSize: 14,
                   color: Tcolor.primaryText,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 45),
+              const SizedBox(height: 25),
               RoundTextfield(
                 hintText: 'Email',
                 controller: emailController,
@@ -272,13 +275,15 @@ class _LoginViewState extends State<LoginView> {
                 hintText: 'Password',
                 controller: passwordController,
                 obscureText: true,
+                
               ),
               const SizedBox(height: 25),
               RoundButton(
                 onPressed: () {
                   if (emailController.text.isEmpty ||
                       passwordController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
                         backgroundColor: Colors.red,
                         content: Text(
                           'Please fill all the fields',
@@ -287,14 +292,15 @@ class _LoginViewState extends State<LoginView> {
                             fontWeight: FontWeight.w800,
                             fontSize: 14,
                           ),
-                        )));
+                        ),
+                      ),
+                    );
                   } else {
                     // userLogin();
                   }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const OnBoardingView()),
+                  Get.offAll(
+                    const OnBoardingView(),
+                    transition: Transition.rightToLeft,
                   );
                 },
                 text: 'Log In',
@@ -302,42 +308,39 @@ class _LoginViewState extends State<LoginView> {
               const SizedBox(height: 15),
               TextButton(
                 onPressed: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ResetPassword()));
+                  Get.off(
+                    const ResetPassword(),
+                    transition: Transition.rightToLeft,
+                  );
                 },
                 child: Text(
                   'Forgot Password?',
                   style: TextStyle(
                     color: Tcolor.secondaryText,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              const SizedBox(height: 25),
-              TextButton(
-                onPressed: () {},
-                child: Text(
-                  'Or Login With',
-                  style: TextStyle(
-                    color: Tcolor.secondaryText,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
+              const SizedBox(height: 15),
+              Text(
+                'Or Login With',
+                style: TextStyle(
+                  color: Tcolor.secondaryText,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               const SizedBox(height: 15),
               RoundIconButton(
                 onPressed: () {
-                  _showPhoneNumberBottomSheet();
+                  //_showPhoneNumberBottomSheet();
                 },
                 title: 'Login with Phone Number',
                 icon: 'assets/iimg/phone.png',
                 color: const Color(0xff367FC0),
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 15),
               RoundIconButton(
                 onPressed: () {
                   // AuthMethods().signInWithGoogle(context);
@@ -346,13 +349,13 @@ class _LoginViewState extends State<LoginView> {
                 icon: 'assets/iimg/google_log.png',
                 color: const Color(0xddE74F50),
               ),
-              const SizedBox(height: 80),
+              const SizedBox(height: 30),
               TextButton(
                 onPressed: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SignupView()));
+                  Get.offAll(
+                    const SignupView(),
+                    transition: Transition.rightToLeft,
+                  );
                 },
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -361,7 +364,7 @@ class _LoginViewState extends State<LoginView> {
                       'Don\'t have an account? ',
                       style: TextStyle(
                         color: Tcolor.secondaryText,
-                        fontSize: 14,
+                        fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -369,7 +372,7 @@ class _LoginViewState extends State<LoginView> {
                       'Sign Up',
                       style: TextStyle(
                         color: Tcolor.primary,
-                        fontSize: 14,
+                        fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
                     )

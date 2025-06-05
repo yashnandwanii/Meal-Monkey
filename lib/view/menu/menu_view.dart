@@ -2,13 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
-import 'package:food_delivery_app/common/custom_text_field.dart';
 import 'package:food_delivery_app/controllers/search_controller.dart';
 import 'package:food_delivery_app/view/menu/menu_items_view.dart';
 import 'package:food_delivery_app/view/menu/search_results.dart';
-import 'package:food_delivery_app/view/more/my_order_view.dart';
+import 'package:food_delivery_app/common_widgets/general_app_bar.dart';
 import 'package:get/get.dart';
 
 class MenuView extends StatefulWidget {
@@ -51,87 +49,8 @@ class _MenuViewState extends State<MenuView> {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(90.h),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 50,
-                left: 20,
-                right: 20,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Menu',
-                    style: TextStyle(
-                      color: Tcolor.primaryText,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MyOrderView(),
-                        ),
-                      );
-                    },
-                    icon: Image.asset(
-                      'assets/iimg/shopping_cart.png',
-                      width: 25,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            CustomSearchField(
-              controller: txtSearch,
-              hintText: 'Search for menu items',
-              obscureText: false,
-              onEditingComplete: () {
-                // Implement search functionality here
-              },
-              suffixIcon: GestureDetector(
-                onTap: () {
-                  if (controller.isTrigger == false) {
-                    controller.searchFoods(txtSearch.text.trim());
-                    controller.setTrigger = true;
-                  } else {
-                    controller.searchResults = null;
-                    controller.setTrigger = false;
-                    txtSearch.clear();
-                    controller.searchFoods(txtSearch.text.trim());
-                  }
-                },
-                child: Obx(
-                  () => controller.isTrigger == false
-                      ? Icon(
-                          Ionicons.search_circle,
-                          color: Tcolor.primaryText,
-                          size: 40.h,
-                        )
-                      : const Icon(
-                          Ionicons.close_circle,
-                          color: Colors.red,
-                          size: 40,
-                        ),
-                ),
-              ),
-              keyboardType: TextInputType.text,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a search term';
-                }
-                return null;
-              },
-            ),
-          ],
-        ),
+        preferredSize: Size.fromHeight(40.h),
+        child: const GeneralAppBar(title: 'Menu'),
       ),
       backgroundColor: Tcolor.white,
       body: Obx(

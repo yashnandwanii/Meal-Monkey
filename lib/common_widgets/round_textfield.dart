@@ -10,14 +10,15 @@ class RoundTextfield extends StatelessWidget {
   final Color? bgColor;
   final Widget? left;
 
-  const RoundTextfield(
-      {super.key,
-      required this.hintText,
-      this.controller,
-      this.keyboardType,
-      this.bgColor,
-      this.left,
-      this.obscureText = false});
+  const RoundTextfield({
+    super.key,
+    required this.hintText,
+    this.controller,
+    this.keyboardType,
+    this.bgColor,
+    this.left,
+    this.obscureText = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +37,7 @@ class RoundTextfield extends StatelessWidget {
             ),
           Expanded(
             child: TextField(
+              
               autocorrect: false,
               controller: controller,
               obscureText: obscureText,
@@ -46,9 +48,10 @@ class RoundTextfield extends StatelessWidget {
                 focusedBorder: InputBorder.none,
                 hintText: hintText,
                 hintStyle: TextStyle(
-                    color: Tcolor.placeholder,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500),
+                  color: Tcolor.placeholder,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),
@@ -98,7 +101,9 @@ class RoundTitleTextfield extends StatelessWidget {
               children: [
                 Container(
                   height: 55,
-                  margin: const EdgeInsets.only(top: 8,),
+                  margin: const EdgeInsets.only(
+                    top: 8,
+                  ),
                   alignment: Alignment.topLeft,
                   child: TextField(
                     autocorrect: false,

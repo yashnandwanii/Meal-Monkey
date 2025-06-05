@@ -127,23 +127,28 @@ class _OnBoardingViewState extends State<OnBoardingView> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: RoundButton(
-                    onPressed: () {
-                      if (selectPage >= 2) {
-                        // go to Home screen
-                        context.pushReplacementTransition(
-                          type: PageTransitionType.rightToLeft,
-                          child: const MainTabview(),
-                        );
-                      } else {
-                        setState(() {
+                  onPressed: () {
+                    if (selectPage >= 2) {
+                      // go to Home screen
+                      context.pushReplacementTransition(
+                        type: PageTransitionType.rightToLeft,
+                        child: const MainTabview(),
+                      );
+                    } else {
+                      setState(
+                        () {
                           selectPage = selectPage + 1;
-                          controller.animateToPage(selectPage,
-                              duration: const Duration(milliseconds: 500),
-                              curve: Curves.easeIn);
-                        });
-                      }
-                    },
-                    text: 'Next'),
+                          controller.animateToPage(
+                            selectPage,
+                            duration: const Duration(milliseconds: 250),
+                            curve: Curves.easeIn,
+                          );
+                        },
+                      );
+                    }
+                  },
+                  text: 'Next',
+                ),
               ),
               SizedBox(
                 height: media.width * 0.2,

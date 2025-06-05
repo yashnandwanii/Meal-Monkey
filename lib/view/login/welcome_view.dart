@@ -3,7 +3,7 @@ import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common_widgets/round_button.dart';
 import 'package:food_delivery_app/view/login/login_view.dart';
 import 'package:food_delivery_app/view/login/signup_view.dart';
-import 'package:page_transition/page_transition.dart';
+import 'package:get/get.dart';
 
 class WelcomeView extends StatefulWidget {
   const WelcomeView({super.key});
@@ -50,11 +50,9 @@ class _WelcomeViewState extends State<WelcomeView> {
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: RoundButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginView(),
-                  ),
+                Get.to(
+                  () => const LoginView(),
+                  transition: Transition.rightToLeft,
                 );
               },
               text: 'Log In',
@@ -65,12 +63,9 @@ class _WelcomeViewState extends State<WelcomeView> {
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: RoundButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    type: PageTransitionType.fade,
-                    child: const SignupView(),
-                  ),
+                Get.to(
+                  () => const SignupView(),
+                  transition: Transition.rightToLeft,
                 );
               },
               type: RoundButtonType.textPrimary,

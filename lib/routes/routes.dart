@@ -7,7 +7,6 @@ import 'package:food_delivery_app/view/login/signup_view.dart';
 import 'package:food_delivery_app/view/main_tabview/main_tabview.dart';
 import 'package:food_delivery_app/view/on_boarding/on_boarding_view.dart';
 import 'package:food_delivery_app/view/on_boarding/startup_view.dart';
-import 'package:food_delivery_app/view/profile/profile_view.dart';
 
 class RouteNames {
   static const String startup = '/';
@@ -27,6 +26,5 @@ class AppRoutes {
     RouteNames.login: (context) => const LoginView(),
     RouteNames.signup: (context) => const SignupView(),
     RouteNames.main_tabview: (context) => const MainTabview(),
-    RouteNames.profile: (context) => const ProfileView(),
   };
 }

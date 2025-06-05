@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 const String appBaseUrl = 'http://localhost:6013';
 
 final List<String> verificationReasons = [
@@ -8,3 +10,7 @@ final List<String> verificationReasons = [
   'Enhanced Security: Enjoy secure transactions and data protection.',
   'User-Friendly Interface: Navigate effortlessly with our intuitive design.',
 ];
+
+final width =
+    // ignore: deprecated_member_use
+    MediaQueryData.fromView(WidgetsBinding.instance.window).size.width;
