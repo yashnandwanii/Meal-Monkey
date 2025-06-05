@@ -30,12 +30,27 @@ class FoodPage extends StatefulHookWidget {
 class _FoodPageState extends State<FoodPage> {
   final TextEditingController _searchController = TextEditingController();
   final PageController _pageController = PageController();
-  final controller = Get.put(FoodsController());
+
+  @override
+  void initState() {
+    super.initState();
+    // Register controller only if not registered already
+    if (!Get.isRegistered<FoodsController>()) {
+      Get.put(FoodsController());
+    }
+
+    // Post-frame call to avoid triggering rebuild during build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final controller = Get.find<FoodsController>();
+      controller.loadAdditives(widget.food.additives);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final hookResult = usefetchRestaurent(
-      widget.food.restaurent,
-    );
+    final hookResult = usefetchRestaurent(widget.food.restaurent);
+    final controller = Get.find<FoodsController>();
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: ListView(
@@ -152,14 +167,17 @@ class _FoodPageState extends State<FoodPage> {
                         FontWeight.w600,
                       ),
                     ),
-                    ReusableText(
-                      text: '\$${widget.food.price * controller.count.value}',
-                      style: appBarTextStyle(
-                        18,
-                        Tcolor.primary,
-                        FontWeight.w600,
+                    Obx(
+                      () => ReusableText(
+                        text:
+                            '\$${(widget.food.price + controller.totalAdditivesPrice) * controller.count.value}',
+                        style: appBarTextStyle(
+                          18,
+                          Tcolor.primary,
+                          FontWeight.w600,
+                        ),
                       ),
-                    ),
+                    )
                   ],
                 ),
                 SizedBox(
@@ -227,45 +245,50 @@ class _FoodPageState extends State<FoodPage> {
                 SizedBox(
                   height: 10.h,
                 ),
-                Column(
-                  children: List.generate(
-                    widget.food.additives.length,
-                    (i) {
-                      final additive = widget.food.additives[i];
-                      return CheckboxListTile(
-                        contentPadding: EdgeInsets.zero,
-                        visualDensity: VisualDensity.compact,
-                        dense: true,
-                        activeColor: Tcolor.primary,
-                        value: false,
-                        title: Row(
-                          children: [
-                            ReusableText(
-                              text: additive.title,
-                              style: appBarTextStyle(
-                                14,
-                                Colors.black,
-                                FontWeight.w400,
-                              ),
-                            ),
-                            const Spacer(),
-                            ReusableText(
-                              text: '\$${additive.price}',
-                              style: appBarTextStyle(
-                                12,
-                                Tcolor.primary,
-                                FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                        onChanged: (bool? value) {},
-                      );
-                    },
-                  ),
-                ),
                 SizedBox(
                   height: 20.h,
+                ),
+                Obx(
+                  () => Column(
+                    children: List.generate(
+                      controller.additivesList.length,
+                      (i) {
+                        final additive = controller.additivesList[i];
+                        return CheckboxListTile(
+                          contentPadding: EdgeInsets.zero,
+                          visualDensity: VisualDensity.compact,
+                          dense: true,
+                          activeColor: Tcolor.primary,
+                          value: additive.isChecked.value,
+                          title: Row(
+                            children: [
+                              ReusableText(
+                                text: additive.title,
+                                style: appBarTextStyle(
+                                  14,
+                                  Colors.black,
+                                  FontWeight.w400,
+                                ),
+                              ),
+                              const Spacer(),
+                              ReusableText(
+                                text: '\$${additive.price}',
+                                style: appBarTextStyle(
+                                  12,
+                                  Tcolor.primary,
+                                  FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          onChanged: (bool? value) {
+                            additive.toggleChecked();
+                            controller.getTotalPrice();
+                          },
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -470,7 +493,6 @@ class _FoodPageState extends State<FoodPage> {
                   },
                   height: 35.h,
                   color: Tcolor.primary,
-                  
                 ),
               ],
             ),

@@ -26,11 +26,11 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
       textColor: Colors.black,
       onSend: (String value) {
         // Handle the send action here, e.g., send OTP to the provided phone number
-        print("Phone number sent: $value");
+        debugPrint("Phone number sent: $value");
       },
       onVerification: (String value) {
         // Handle the verification action here, e.g., verify the OTP
-        print("OTP verified: $value");
+        debugPrint("OTP verified: $value");
       },
     );
   }
