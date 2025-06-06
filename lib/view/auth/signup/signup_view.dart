@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
+import 'package:food_delivery_app/common_widgets/input_field.dart';
 import 'package:food_delivery_app/common_widgets/round_button.dart';
-import 'package:food_delivery_app/common_widgets/round_textfield.dart';
+import 'package:food_delivery_app/controllers/registration_controller.dart';
+import 'package:food_delivery_app/models/registration_model.dart';
 
-import 'package:food_delivery_app/view/login/login_view.dart';
+import 'package:food_delivery_app/view/auth/login/login_view.dart';
+import 'package:food_delivery_app/view/auth/password_field.dart';
+import 'package:food_delivery_app/view/on_boarding/on_boarding_view.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -15,31 +20,22 @@ class SignupView extends StatefulWidget {
 }
 
 class _SignupViewState extends State<SignupView> {
-  String email = '';
-  String password = '';
-  String name = '';
-
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // * register
-  void submit() {
-    // if (_formKey.currentState!.validate()) {
-    //   // * Register user
-    //   _authController.register(
-    //     nameController.text,
-    //     emailController.text,
-    //     passwordController.text,
-    //   );
-    //   Get.offAllNamed('/onboarding');
-    // }
-    //showSnackbar("Good,", "You have successfully registered");
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    nameController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(RegistrationController());
     return Scaffold(
       backgroundColor: Tcolor.white,
       body: SingleChildScrollView(
@@ -53,12 +49,11 @@ class _SignupViewState extends State<SignupView> {
                 Container(
                   width: 250,
                   height: 250,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
                   ),
                   child: Lottie.asset(
-                    'assets/signup.json',
-                    fit: BoxFit.cover,
+                    'assets/login.json',
                   ),
                 ),
                 Text(
@@ -70,29 +65,74 @@ class _SignupViewState extends State<SignupView> {
                   ),
                 ),
                 const SizedBox(height: 45),
-                RoundTextfield(
-                  hintText: 'Name',
+                InputField(
                   controller: nameController,
-                  keyboardType: TextInputType.name,
+                  hintText: 'Name',
+                  suffixicon: false,
+                  leadingIcon: Icons.person_outline,
                 ),
                 const SizedBox(height: 25),
-                RoundTextfield(
-                  hintText: 'Email',
+                InputField(
                   controller: emailController,
-                  keyboardType: TextInputType.emailAddress,
+                  hintText: 'Email',
+                  suffixicon: false,
+                  leadingIcon: Icons.email_outlined,
                 ),
                 const SizedBox(height: 25),
-                RoundTextfield(
-                  hintText: 'Password',
+                PasswordField(
                   controller: passwordController,
-                  obscureText: true,
+                  isObscure: true.obs,
                 ),
                 const SizedBox(height: 45),
                 RoundButton(
                   onPressed: () {
-                    submit();
+                    if (emailController.text.isEmpty ||
+                        passwordController.text.isEmpty ||
+                        nameController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text(
+                            'Please fill all the fields',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      );
+                    } else if (passwordController.text.length < 8) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text(
+                            'Password must be at least 8 characters',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      );
+                    } else {
+                      RegistrationModel model = RegistrationModel(
+                        username: nameController.text.trim(),
+                        email: emailController.text.trim(),
+                        password: passwordController.text.trim(),
+                      );
+                      String data = registrationModelToJson(model);
+                      controller.registrationFunction(data);
+
+                      Get.offAll(
+                        () => const OnBoardingView(),
+                        transition: Transition.rightToLeft,
+                        duration: const Duration(milliseconds: 500),
+                      );
+                    }
                   },
-                  text: 'Sign Up',
+                  text: controller.isLoading ? 'Loading...' : 'S I G N  U P',
                 ),
                 const SizedBox(height: 25),
                 TextButton(
@@ -129,37 +169,15 @@ class _SignupViewState extends State<SignupView> {
                 ),
                 RoundButton(
                   type: RoundButtonType.textPrimary,
-                  onPressed: () {
-                    if (emailController.text.isNotEmpty &&
-                        passwordController.text.isNotEmpty) {
-                      email = emailController.text;
-                      password = passwordController.text;
-                      context.pushNamedTransition(
-                        routeName: '/otp',
-                        type: PageTransitionType.fade,
-                      );
-                    } else {
-                      //showSnackbar("Error", "Please fill all fields");
-                    }
-                  },
+                  onPressed: () {},
                   text: 'Sign Up with Phone No',
                 ),
                 const SizedBox(
                   height: 25,
                 ),
                 RoundButton(
-                  onPressed: () {
-                    if (nameController.text.isNotEmpty &&
-                        emailController.text.isNotEmpty &&
-                        passwordController.text.isNotEmpty) {
-                      email = emailController.text;
-                      password = passwordController.text;
-                      name = nameController.text;
-                      submit();
-                    } else {
-                      //showSnackbar("Error", "Please fill all fields");
-                    }
-                  },
+                  onPressed: () {},
+                  nColor: const Color(0xddE74F50),
                   text: 'Sign Up with Google',
                 ),
               ],

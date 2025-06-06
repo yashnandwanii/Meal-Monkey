@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 
-import 'my_order_view.dart';
+import '../cart/cart.dart';
 
 class AboutUsView extends StatefulWidget {
   const AboutUsView({super.key});

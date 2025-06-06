@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
-import 'package:food_delivery_app/view/more/my_order_view.dart';
+import 'package:food_delivery_app/view/cart/cart.dart';
 
 class NotificationsView extends StatefulWidget {
   const NotificationsView({super.key});

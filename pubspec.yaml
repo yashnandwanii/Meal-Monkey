@@ -36,6 +36,8 @@ dependencies:
   phone_otp_verification: ^1.0.3
   flutter_svg: ^2.1.0
   lottie: ^3.3.1
+  get_storage: ^2.1.1
+  flutter_otp_text_field: ^1.5.1+1
 
 dev_dependencies:
   flutter_test:

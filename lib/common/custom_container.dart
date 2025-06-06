@@ -7,7 +7,8 @@ class CustomContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
+      color: Colors.white,
       height: MediaQuery.of(context).size.height * 0.75,
       child: ClipRRect(
         borderRadius: BorderRadius.only(

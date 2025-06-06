@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/view/home/homeview.dart';
-import 'package:food_delivery_app/view/login/login_view.dart';
-import 'package:food_delivery_app/view/login/signup_view.dart';
+import 'package:food_delivery_app/view/auth/login/login_view.dart';
+import 'package:food_delivery_app/view/auth/signup/signup_view.dart';
 import 'package:food_delivery_app/view/main_tabview/main_tabview.dart';
 import 'package:food_delivery_app/view/on_boarding/on_boarding_view.dart';
 import 'package:food_delivery_app/view/on_boarding/startup_view.dart';

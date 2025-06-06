@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
+import 'package:food_delivery_app/models/login_response.dart';
 
 class UserInfoWidget extends StatelessWidget {
   const UserInfoWidget({
     super.key,
+    this.user,
   });
+
+  final LoginResponse? user;
 
   @override
   Widget build(BuildContext context) {
@@ -26,25 +30,23 @@ class UserInfoWidget extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 30.r,
-                backgroundImage: const NetworkImage(
-                  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cGVyc29ufGVufDB8fDB8fHww',
-                ),
+                backgroundImage: NetworkImage(user!.profile),
               ),
               SizedBox(width: 16.w),
-              const Column(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'User Name',
-                    style: TextStyle(
+                    user!.username,
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    'yasharora9084@gmail.com',
-                    style: TextStyle(
+                    user!.email,
+                    style: const TextStyle(
                       fontSize: 14,
                       color: Colors.grey,
                     ),

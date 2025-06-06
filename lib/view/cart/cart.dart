@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
+import 'package:food_delivery_app/common/custom_button.dart';
 import 'package:food_delivery_app/common_widgets/round_button.dart';
+import 'package:food_delivery_app/controllers/login_controller.dart';
+import 'package:food_delivery_app/models/login_response.dart';
+import 'package:food_delivery_app/view/auth/login/login_view.dart';
+import 'package:food_delivery_app/view/auth/verification_page.dart';
 import 'package:food_delivery_app/view/more/checkout_view.dart';
+import 'package:food_delivery_app/view/profile/widget/profile_appbar.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class MyOrderView extends StatefulWidget {
   const MyOrderView({super.key});
@@ -21,6 +30,48 @@ class _MyOrderViewState extends State<MyOrderView> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(LoginController());
+    final box = GetStorage();
+    LoginResponse? user;
+
+    String? token = box.read('token');
+    if (token != null) {
+      user = controller.getUserInfo();
+      // debugPrint('User Info: ${user?.username}, ${user?.email}');
+    }
+
+    if (user != null && user.verification == false) {
+      Get.to(
+        () => const VerificationPage(),
+      );
+    }
+
+    if (token == null) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(40.h),
+          child: const ProfileAppbar(),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Please log in to view your profile',
+                style: TextStyle(fontSize: 16.sp, color: Colors.black54),
+              ),
+              SizedBox(height: 20.h),
+              CustomButton(
+                  text: 'Login',
+                  ontap: () {
+                    Get.offAll(() => const LoginView());
+                  }),
+            ],
+          ),
+        ),
+      );
+    }
     return Scaffold(
       backgroundColor: Tcolor.white,
       body: SingleChildScrollView(

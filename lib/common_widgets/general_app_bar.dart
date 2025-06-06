@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/app_style.dart';
-import 'package:food_delivery_app/view/more/my_order_view.dart';
+import 'package:food_delivery_app/view/cart/cart.dart';
 import 'package:get/get.dart';
 
 class GeneralAppBar extends StatelessWidget {

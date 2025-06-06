@@ -3,15 +3,49 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:food_delivery_app/common/custom_button.dart';
 import 'package:food_delivery_app/common/custom_container.dart';
+import 'package:food_delivery_app/controllers/login_controller.dart';
+import 'package:food_delivery_app/models/login_response.dart';
+import 'package:food_delivery_app/view/auth/verification_page.dart';
 import 'package:food_delivery_app/view/profile/widget/profile_appbar.dart';
 import 'package:food_delivery_app/view/profile/widget/profile_tile_widget.dart';
 import 'package:food_delivery_app/view/profile/widget/user_info_widget.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    LoginResponse? user;
+    final controller = Get.put(LoginController());
+
+    final box = GetStorage();
+    String? token = box.read('token');
+
+    if (token != null) {
+      user = controller.getUserInfo();
+      //debugPrint('User Info: ${user?.username}, ${user?.email}');
+    }
+    if (token == null) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(40.h),
+          child: const ProfileAppbar(),
+        ),
+        body: Center(
+          child: Text(
+            'Please log in to view your profile',
+            style: TextStyle(fontSize: 16.sp, color: Colors.black54),
+          ),
+        ),
+      );
+    }
+    if(user != null && user.verification == false){
+      Get.to(()=> VerificationPage());
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -22,7 +56,7 @@ class ProfilePage extends StatelessWidget {
         child: CustomContainer(
           containerContent: Column(
             children: [
-              const UserInfoWidget(),
+              UserInfoWidget(user: user),
               SizedBox(
                 height: 15.h,
               ),
@@ -102,7 +136,9 @@ class ProfilePage extends StatelessWidget {
               ),
               CustomButton(
                 text: 'Logout',
-                ontap: () {},
+                ontap: () {
+                  controller.logout();
+                },
                 radius: 0,
                 color: Colors.red,
               ),

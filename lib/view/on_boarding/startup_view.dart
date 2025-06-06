@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
-import 'package:food_delivery_app/view/login/welcome_view.dart';
+import 'package:food_delivery_app/view/auth/login/welcome_view.dart';
 import 'package:page_transition/page_transition.dart';
 
 class StartupView extends StatefulWidget {

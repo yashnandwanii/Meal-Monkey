@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 
@@ -6,12 +8,15 @@ enum RoundButtonType { bgprimary, textPrimary }
 class RoundButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
+  Color? nColor;
   final RoundButtonType type;
-  const RoundButton(
-      {super.key,
-      required this.onPressed,
-      required this.text,
-      this.type = RoundButtonType.bgprimary});
+  RoundButton({
+    super.key,
+    required this.onPressed,
+    required this.text,
+    this.type = RoundButtonType.bgprimary,
+    this.nColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +28,9 @@ class RoundButton extends StatelessWidget {
           border: type == RoundButtonType.bgprimary
               ? null
               : Border.all(color: Tcolor.primary, width: 1),
-          color:
-              type == RoundButtonType.bgprimary ? Tcolor.primary : Colors.white,
+          color: type == RoundButtonType.bgprimary
+              ? (nColor ?? Tcolor.primary)
+              : Colors.white,
           borderRadius: BorderRadius.circular(28),
         ),
         child: Center(

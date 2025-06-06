@@ -4,7 +4,7 @@ import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common_widgets/general_app_bar.dart';
 import 'package:food_delivery_app/view/more/about_us_view.dart';
 import 'package:food_delivery_app/view/more/inbox_view.dart';
-import 'package:food_delivery_app/view/more/my_order_view.dart';
+import 'package:food_delivery_app/view/cart/cart.dart';
 import 'package:food_delivery_app/view/more/notifications_view.dart';
 import 'package:food_delivery_app/view/more/payment_details_view.dart';
 

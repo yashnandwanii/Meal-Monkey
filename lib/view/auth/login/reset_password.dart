@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common_widgets/round_button.dart';
 import 'package:food_delivery_app/common_widgets/round_textfield.dart';
-import 'package:food_delivery_app/view/login/new_password.dart';
+import 'package:food_delivery_app/view/auth/login/new_password.dart';
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({super.key});
