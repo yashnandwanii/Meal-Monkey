@@ -2,24 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CLIENT_ID</key>
-	<string>717483379177-057drpignna0rdoi63o5rkmt5pjvapb2.apps.googleusercontent.com</string>
-	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.717483379177-057drpignna0rdoi63o5rkmt5pjvapb2</string>
-	<key>ANDROID_CLIENT_ID</key>
-	<string>717483379177-39dl52v75d181vmhu70le4gm2k3e1o12.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAW1aYVBRmZbDuWG7OuAFrDhmPWL6iCMQo</string>
+	<string>AIzaSyDPQJpeViIPmI05MjPRy_W072EG-jQ63QQ</string>
 	<key>GCM_SENDER_ID</key>
-	<string>717483379177</string>
+	<string>273316376823</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.foodDeliveryApp</string>
 	<key>PROJECT_ID</key>
-	<string>meal-monkey-38084</string>
+	<string>meal-monkey-71a01</string>
 	<key>STORAGE_BUCKET</key>
-	<string>meal-monkey-38084.firebasestorage.app</string>
+	<string>meal-monkey-71a01.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:717483379177:ios:919f9136b90d8bde91e378</string>
+	<string>1:273316376823:ios:741db1b6b1a17cb315e3f2</string>
 </dict>
 </plist>

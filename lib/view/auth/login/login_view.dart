@@ -113,6 +113,19 @@ class _LoginViewState extends State<LoginView> {
                     String data = loginModelToJson(model);
                     controller.loginFunction(data);
 
+                    final user = controller.getUserInfo();
+                    //debugPrint('User Info: ${user?.username}, ${user?.email}');
+
+                    Get.showSnackbar(
+                      GetSnackBar(
+                        title: 'Login Successful',
+                        message: 'Welcome back, ${user?.username}!',
+                        duration: const Duration(seconds: 2),
+                        snackPosition: SnackPosition.TOP,
+                        backgroundColor: Tcolor.primary,
+                        borderColor: Colors.white,
+                      ),
+                    );
                     Get.offAll(
                       () => const OnBoardingView(),
                       transition: Transition.rightToLeft,

@@ -1,6 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common/constants.dart';
 import 'package:food_delivery_app/models/api_error.dart';
 import 'package:food_delivery_app/models/success_model.dart';
@@ -12,14 +12,10 @@ class RegistrationController extends GetxController {
   final box = GetStorage();
 
   RxBool _isLoading = false.obs;
-
   bool get isLoading => _isLoading.value;
+  set setLoading(bool value) => _isLoading.value = value;
 
-  set setLoading(bool value) {
-    _isLoading.value = value;
-  }
-
-  void registrationFunction(String data) async {
+  Future<void> registrationFunction(String data) async {
     setLoading = true;
 
     Uri uri = Uri.parse('$appBaseUrl/register');
@@ -33,36 +29,80 @@ class RegistrationController extends GetxController {
       debugPrint('Response body: ${response.body}');
 
       if (response.statusCode == 201) {
-        var data = successModelFromJson(response.body);
+        var successResponse = successModelFromJson(response.body);
+        debugPrint('SUCCESS: $successResponse');
+
+        // Parse the registration data
+        Map<String, dynamic> registrationData = json.decode(data);
+        String email = registrationData['email'];
+
+        // Clear any old data
+        box.remove('verification');
+        box.remove('email');
+        box.remove('tempUserData');
+        box.remove('token');
+        box.remove('userId');
+
+        // Store new registration data
+        box.write('verification', false); // Initial verification status
+        box.write('email', email); // Store email for verification process
+        box.write('tempUserData', data); // Store temporary user data
+        box.write('token', successResponse.token); // Store the JWT token
+        box.write('userId', successResponse.id); // Store the user ID
+
+        // Debug GetStorage contents
+        debugPrint('--- GetStorage Contents ---');
+        debugPrint('Email: $email');
+        debugPrint('Verification Status: ${box.read('verification')}');
+        box.getKeys().forEach((key) {
+          debugPrint('$key: ${box.read(key)}');
+        });
+        debugPrint('------------------------');
 
         setLoading = false;
-        
-
-        Get.snackbar(
-          'You are successfully registered,',
-          data.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Tcolor.primary,
-          colorText: Colors.white54,
-          icon: const Icon(Ionicons.fast_food_outline, color: Colors.white54),
-          duration: const Duration(seconds: 2),
-        );
       } else {
-        var error = apiErrorFromJson(response.body);
-        setLoading = false;
-        Get.snackbar(
-          'Failed to register',
-          error.message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          icon: const Icon(Ionicons.close_circle_outline, color: Colors.white),
-          duration: const Duration(seconds: 2),
-        );
+        try {
+          debugPrint('Error response body: ${response.body}');
+          var error = apiErrorFromJson(response.body);
+          setLoading = false;
+          Get.snackbar(
+            'Registration Failed',
+            error.message,
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            icon:
+                const Icon(Ionicons.close_circle_outline, color: Colors.white),
+            duration: const Duration(seconds: 3),
+          );
+          debugPrint('Error: ${error.message}');
+        } catch (parseError) {
+          debugPrint('Error parsing error response: $parseError');
+          setLoading = false;
+          Get.snackbar(
+            'Registration Failed',
+            'An unexpected error occurred. Please try again.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+            icon:
+                const Icon(Ionicons.close_circle_outline, color: Colors.white),
+            duration: const Duration(seconds: 3),
+          );
+        }
       }
     } catch (e) {
       debugPrint('Error during registration: $e');
       setLoading = false;
+      Get.snackbar(
+        'Error',
+        'An error occurred during registration. Please try again.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        icon: const Icon(Ionicons.close_circle_outline, color: Colors.white),
+        duration: const Duration(seconds: 3),
+      );
     }
   }
 }

@@ -43,16 +43,6 @@ class LoginController extends GetxController {
         box.write('verification', data.verification);
 
         setLoading = false;
-
-        Get.snackbar(
-          'You are successfully logged in',
-          'Welcome back!',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Tcolor.primary,
-          colorText: Colors.white,
-          icon: const Icon(Ionicons.fast_food_outline, color: Colors.white54),
-          duration: const Duration(seconds: 2),
-        );
       } else {
         var error = apiErrorFromJson(response.body);
         setLoading = false;

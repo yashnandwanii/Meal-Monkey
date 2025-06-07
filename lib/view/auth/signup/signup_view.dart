@@ -7,6 +7,7 @@ import 'package:food_delivery_app/models/registration_model.dart';
 
 import 'package:food_delivery_app/view/auth/login/login_view.dart';
 import 'package:food_delivery_app/view/auth/password_field.dart';
+import 'package:food_delivery_app/view/auth/verification_page.dart';
 import 'package:food_delivery_app/view/on_boarding/on_boarding_view.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
@@ -85,7 +86,7 @@ class _SignupViewState extends State<SignupView> {
                 ),
                 const SizedBox(height: 45),
                 RoundButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (emailController.text.isEmpty ||
                         passwordController.text.isEmpty ||
                         nameController.text.isEmpty) {
@@ -117,19 +118,58 @@ class _SignupViewState extends State<SignupView> {
                         ),
                       );
                     } else {
-                      RegistrationModel model = RegistrationModel(
-                        username: nameController.text.trim(),
-                        email: emailController.text.trim(),
-                        password: passwordController.text.trim(),
-                      );
-                      String data = registrationModelToJson(model);
-                      controller.registrationFunction(data);
-
-                      Get.offAll(
-                        () => const OnBoardingView(),
-                        transition: Transition.rightToLeft,
-                        duration: const Duration(milliseconds: 500),
-                      );
+                      try {
+                        RegistrationModel model = RegistrationModel(
+                          username: nameController.text.trim(),
+                          email: emailController.text.trim(),
+                          password: passwordController.text.trim(),
+                        );
+                        String data = registrationModelToJson(model);
+                        await controller.registrationFunction(data);
+                        
+                        // Check verification status after registration
+                        bool? verificationStatus = controller.box.read('verification');
+                        debugPrint('Verification code needed: ${verificationStatus == false}');
+                        
+                        if (verificationStatus == false) {
+                          Get.snackbar(
+                            'Verification Required',
+                            'Please check your email for verification code',
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: Tcolor.primary,
+                            colorText: Colors.white,
+                            icon: const Icon(Icons.warning, color: Colors.white54),
+                            duration: const Duration(seconds: 3),
+                          );
+                          Get.to(() => const VerificationPage());
+                        } else {
+                          Get.snackbar(
+                            'Registration Successful',
+                            'Welcome to our app!',
+                            snackPosition: SnackPosition.TOP,
+                            backgroundColor: Tcolor.primary,
+                            colorText: Colors.white,
+                            icon: const Icon(Icons.check_circle_outline,
+                                color: Colors.white54),
+                            duration: const Duration(seconds: 2),
+                          );
+                          Get.offAll(
+                            () => const OnBoardingView(),
+                            transition: Transition.rightToLeft,
+                          );
+                        }
+                      } catch (e) {
+                        debugPrint('Error during signup: $e');
+                        Get.snackbar(
+                          'Error',
+                          'Something went wrong during signup',
+                          snackPosition: SnackPosition.BOTTOM,
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                          icon: const Icon(Icons.error, color: Colors.white),
+                          duration: const Duration(seconds: 3),
+                        );
+                      }
                     }
                   },
                   text: controller.isLoading ? 'Loading...' : 'S I G N  U P',

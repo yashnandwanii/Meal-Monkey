@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common/reusable_text.dart';
 
 class CustomButton extends StatelessWidget {
@@ -26,7 +27,7 @@ class CustomButton extends StatelessWidget {
         width: width ?? MediaQuery.of(context).size.width,
         height: height ?? 28.h,
         decoration: BoxDecoration(
-          color: color ?? Colors.red,
+          color: color ?? Tcolor.primary,
           borderRadius: BorderRadius.circular(radius ?? 9.r),
         ),
         child: Center(

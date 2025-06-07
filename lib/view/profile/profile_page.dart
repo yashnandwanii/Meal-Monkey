@@ -43,7 +43,7 @@ class ProfilePage extends StatelessWidget {
       );
     }
     if(user != null && user.verification == false){
-      Get.to(()=> VerificationPage());
+      Get.to(()=> const VerificationPage());
     }
 
     return Scaffold(

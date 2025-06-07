@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
+import 'package:food_delivery_app/controllers/phone_verification_controller.dart';
+import 'package:get/get.dart';
 import 'package:phone_otp_verification/phone_verification.dart';
 
 class PhoneVerificationPage extends StatefulWidget {
@@ -12,6 +14,7 @@ class PhoneVerificationPage extends StatefulWidget {
 class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(PhoneVerificationController());
     return PhoneVerification(
       isFirstPage: false,
       enableLogo: false,
@@ -25,7 +28,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
       ),
       textColor: Colors.black,
       onSend: (String value) {
-        // Handle the send action here, e.g., send OTP to the provided phone number
+        controller.setPhoneNo = value;
         debugPrint("Phone number sent: $value");
       },
       onVerification: (String value) {

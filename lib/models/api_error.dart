@@ -14,12 +14,12 @@ class ApiError {
   });
 
   factory ApiError.fromJson(Map<String, dynamic> json) => ApiError(
-        status: json["status"],
-        message: json["error"],
+        status: json["status"] ?? false,
+        message: json["message"] as String,
       );
 
   Map<String, dynamic> toJson() => {
         "status": status,
-        "error": message,
+        "message": message,
       };
 }
