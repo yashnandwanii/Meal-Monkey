@@ -90,9 +90,20 @@ class VerificationController extends GetxController {
         try {
           LoginResponse data = loginResponseFromJson(response.body);
 
+          if (data.verification != true) {
+            throw Exception('Verification status not updated properly');
+          }
+
           // Store the verified user data
           String userId = data.id;
           String userData = jsonEncode(data);
+
+          // Update storage with verified user data
+          box.write(userId, userData);
+          box.write('token', data.token);
+          box.write('userId', userId);
+          box.write('verification', true);
+          box.write('isLoggedIn', true);
 
           // Clean up temporary data
           box.remove('tempUserData');

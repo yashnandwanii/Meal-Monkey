@@ -1,5 +1,6 @@
 // ignore_for_file: unrelated_type_equality_checks
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:food_delivery_app/common/app_style.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common/constants.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:food_delivery_app/common/custom_button.dart';
 import 'package:food_delivery_app/common/custom_text_field.dart';
 import 'package:food_delivery_app/common/reusable_text.dart';
@@ -30,6 +32,19 @@ class FoodPage extends StatefulHookWidget {
 class _FoodPageState extends State<FoodPage> {
   final TextEditingController _searchController = TextEditingController();
   final PageController _pageController = PageController();
+
+  void handlePlaceOrder() {
+    //final controller = Get.find<FoodsController>();
+
+    Get.snackbar(
+      'Order Placed',
+      'Your order has been placed successfully',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.green,
+      colorText: Colors.white,
+      duration: const Duration(seconds: 2),
+    );
+  }
 
   @override
   void initState() {
@@ -375,11 +390,26 @@ class _FoodPageState extends State<FoodPage> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          _showVerificationSheet(context).then((value) {
-                            if (value != null) {
-                              Get.back();
+                          final box = GetStorage();
+                          final userId = box.read('userId');
+                          if (userId != null) {
+                            final userData = box.read(userId);
+                            if (userData != null) {
+                              final Map<String, dynamic> user =
+                                  json.decode(userData);
+                              if (user['phoneVerification'] == true) {
+                                // Phone is verified, proceed with order
+                                handlePlaceOrder();
+                              } else {
+                                // Phone not verified, show verification sheet
+                                _showVerificationSheet(context).then((value) {
+                                  if (value != null) {
+                                    Get.back();
+                                  }
+                                });
+                              }
                             }
-                          });
+                          }
                         },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12.0),

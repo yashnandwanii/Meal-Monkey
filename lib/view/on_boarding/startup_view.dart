@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/view/auth/login/welcome_view.dart';
+import 'package:food_delivery_app/view/main_tabview/main_tabview.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:page_transition/page_transition.dart';
 
 class StartupView extends StatefulWidget {
@@ -11,6 +13,7 @@ class StartupView extends StatefulWidget {
 }
 
 class _StartupViewState extends State<StartupView> {
+  final box = GetStorage();
   @override
   void initState() {
     super.initState();
@@ -19,6 +22,15 @@ class _StartupViewState extends State<StartupView> {
 
   void goWelcomePage() async {
     await Future.delayed(const Duration(seconds: 2));
+    if (box.hasData('token')) {
+      // If user is already logged in, redirect to home page
+      // ignore: use_build_context_synchronously
+      context.pushReplacementTransition(
+        type: PageTransitionType.rightToLeft,
+        child: const MainTabview(),
+      );
+      return;
+    }
     welcomePage();
   }
 

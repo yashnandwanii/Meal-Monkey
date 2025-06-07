@@ -42,8 +42,11 @@ class ProfilePage extends StatelessWidget {
         ),
       );
     }
-    if(user != null && user.verification == false){
-      Get.to(()=> const VerificationPage());
+
+    if (user != null && user.verification == false) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Get.offAll(() => const VerificationPage());
+      });
     }
 
     return Scaffold(
