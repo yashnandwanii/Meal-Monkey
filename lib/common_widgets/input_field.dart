@@ -12,12 +12,14 @@ class InputField extends StatelessWidget {
     this.isObscure,
     this.suffixicon = false,
     required this.leadingIcon,
+    this.keyboardType = TextInputType.text,
   });
   final TextEditingController controller;
   final String? hintText;
   final RxBool? isObscure;
   bool suffixicon = false;
   final IconData leadingIcon;
+  final TextInputType keyboardType;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
