@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_delivery_app/common/app_style.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common/reusable_text.dart';
 import 'package:food_delivery_app/controllers/user_location_controller.dart';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class CustomAppbar extends StatefulWidget {
+import '../models/login_response.dart';
+
+class CustomAppbar extends StatefulHookWidget {
   const CustomAppbar({super.key});
 
   @override
@@ -16,6 +21,10 @@ class CustomAppbar extends StatefulWidget {
 }
 
 class _CustomAppbarState extends State<CustomAppbar> {
+  LoginResponse? user;
+  final UserLocationController _userLocationController =
+      Get.put(UserLocationController());
+  String _currentLocation = '';
   String getTimeOfDay() {
     DateTime now = DateTime.now();
     int hour = now.hour;
@@ -82,6 +91,12 @@ class _CustomAppbarState extends State<CustomAppbar> {
       controller.setPosition(currentLocation);
 
       controller.getUserAddress(currentLocation);
+      if (mounted) {
+        setState(() {
+          _currentLocation = controller.address;
+        });
+      }
+      debugPrint('Current location: $_currentLocation');
     } catch (e) {
       debugPrint("Error getting location: $e");
     }
@@ -90,7 +105,7 @@ class _CustomAppbarState extends State<CustomAppbar> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    final controller = Get.put(UserLocationController());
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
       height: 110.h,
@@ -108,8 +123,8 @@ class _CustomAppbarState extends State<CustomAppbar> {
                 CircleAvatar(
                   radius: 23.r,
                   backgroundColor: Colors.orange,
-                  backgroundImage: const NetworkImage(
-                      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fHww"),
+                  backgroundImage: NetworkImage(user?.profile ??
+                      "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png"),
                 ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 6.h, left: 8.w),
@@ -125,35 +140,29 @@ class _CustomAppbarState extends State<CustomAppbar> {
                           FontWeight.w600,
                         ),
                       ),
-                      Obx(
-                        () => SizedBox(
-                          width: width * 0.65,
-                          child: Text(
-                            controller.address != ""
-                                ? controller.address
-                                : "Address Not found.",
-                            style: appBarTextStyle(
-                              12,
-                              Colors.grey,
-                              FontWeight.w600,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                      Obx(() {
+                        final address = _userLocationController.address;
+                        return ReusableText(
+                          text: address,
+                          style: appBarTextStyle(
+                            13,
+                            Colors.grey,
+                            FontWeight.w400,
                           ),
-                        ),
-                      ),
+                        );
+                      }),
                     ],
                   ),
                 ),
-                Text(
-                  getTimeOfDay(),
-                  style: appBarTextStyle(
-                    40,
-                    Colors.black,
-                    FontWeight.w600,
-                  ),
-                ),
               ],
+            ),
+            Text(
+              getTimeOfDay(),
+              style: appBarTextStyle(
+                40,
+                Colors.black,
+                FontWeight.w600,
+              ),
             ),
           ],
         ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/app_style.dart';
-import 'package:food_delivery_app/view/cart/cart.dart';
+import 'package:food_delivery_app/view/cart/cart_page.dart';
 import 'package:get/get.dart';
 
 class GeneralAppBar extends StatelessWidget {
@@ -29,7 +29,9 @@ class GeneralAppBar extends StatelessWidget {
         IconButton(
           onPressed: () {
             Get.to(
-              const MyOrderView(),
+              () => const CartPage(),
+              preventDuplicates: false,
+              transition: Transition.rightToLeft,
             );
           },
           icon: Image.asset(

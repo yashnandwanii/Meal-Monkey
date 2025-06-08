@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
-import 'package:food_delivery_app/view/cart/cart.dart';
+import 'package:food_delivery_app/view/cart/cart_page.dart';
 
 class NotificationsView extends StatefulWidget {
   const NotificationsView({super.key});
@@ -118,7 +118,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const MyOrderView()));
+                                builder: (context) => const CartPage()));
                       },
                       icon: Image.asset(
                         "assets/iimg/shopping_cart.png",

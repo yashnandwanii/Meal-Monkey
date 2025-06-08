@@ -4,6 +4,7 @@ import 'package:food_delivery_app/common/custom_container.dart';
 import 'package:food_delivery_app/common/heading.dart';
 import 'package:food_delivery_app/common_widgets/custom_appbar.dart';
 import 'package:food_delivery_app/controllers/category_controller.dart';
+import 'package:food_delivery_app/models/login_response.dart';
 import 'package:food_delivery_app/view/category/all_categories.dart';
 import 'package:food_delivery_app/view/home/all_fastest_foods.dart';
 import 'package:food_delivery_app/view/home/all_nearby_restaurents.dart';
@@ -13,6 +14,7 @@ import 'package:food_delivery_app/view/home/widgets/category_list.dart';
 import 'package:food_delivery_app/view/home/widgets/food_list.dart';
 import 'package:food_delivery_app/view/home/widgets/nearby_restaurents_list.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class Homeview extends StatefulWidget {
   const Homeview({super.key});
@@ -21,6 +23,8 @@ class Homeview extends StatefulWidget {
 }
 
 class _HomeviewState extends State<Homeview> {
+  final LoginResponse? user = GetStorage().read<LoginResponse>('user');
+  final GetStorage box = GetStorage();
   TextEditingController txtController = TextEditingController();
 
   @override

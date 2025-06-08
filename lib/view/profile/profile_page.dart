@@ -6,7 +6,7 @@ import 'package:food_delivery_app/common/custom_container.dart';
 import 'package:food_delivery_app/controllers/login_controller.dart';
 import 'package:food_delivery_app/models/login_response.dart';
 import 'package:food_delivery_app/view/auth/verification_page.dart';
-import 'package:food_delivery_app/view/profile/shipping_address.dart';
+import 'package:food_delivery_app/view/profile/addresses_page.dart';
 import 'package:food_delivery_app/view/profile/widget/profile_appbar.dart';
 import 'package:food_delivery_app/view/profile/widget/profile_tile_widget.dart';
 import 'package:food_delivery_app/view/profile/widget/user_info_widget.dart';
@@ -116,11 +116,7 @@ class ProfilePage extends StatelessWidget {
                       title: 'Shipping Address',
                       icon: SimpleLineIcons.location_pin,
                       onTap: () {
-                        Get.to(
-                          () => const ShippingAddressPage(),
-                          duration: const Duration(milliseconds: 900),
-                          transition: Transition.rightToLeft,
-                        );
+                        Get.to(() => const AddressPage());
                       },
                     ),
                     ProfileTileWidget(

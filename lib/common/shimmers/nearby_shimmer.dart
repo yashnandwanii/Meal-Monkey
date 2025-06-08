@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_delivery_app/common/shimmers/shimmer_widget.dart';
 
 class NearbyShimmer extends StatelessWidget {
-  const NearbyShimmer({super.key});
+  const NearbyShimmer({super.key, this.scrollDirection = Axis.horizontal});
+
+  final Axis scrollDirection;
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +13,7 @@ class NearbyShimmer extends StatelessWidget {
       height: 75,
       padding: const EdgeInsets.only(left: 12, top: 10),
       child: ListView.builder(
-        scrollDirection: Axis.horizontal,
+        scrollDirection: scrollDirection,
         itemCount: 5,
         itemBuilder: (context, index) {
           return Padding(

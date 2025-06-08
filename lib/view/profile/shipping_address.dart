@@ -126,6 +126,39 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
     }
   }
 
+  void _getAddressFromLatLng(LatLng position) async {
+    final url = Uri.parse(
+      'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$googleApiKey',
+    );
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data['results'] != null && data['results'].isNotEmpty) {
+        final result = data['results'][0];
+        final address = result['formatted_address'] ?? 'No address found';
+
+        String postalCode = "";
+        final addressComponents = result['address_components'];
+
+        for (var component in addressComponents) {
+          if (component['types'].contains('postal_code')) {
+            postalCode = component['long_name'];
+            break;
+          }
+        }
+
+        setState(() {
+          _searchController.text = address;
+          _postalCode.text = postalCode;
+        });
+      }
+    } else {
+      debugPrint('Error fetching address details: ${response.statusCode}');
+    }
+  }
+
   void moveToSelectedPosition() {
     if (_selectedLocation != null && _mapController != null) {
       _mapController!.animateCamera(
@@ -239,6 +272,7 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
                                 setState(() {
                                   _selectedLocation = newPosition;
                                 });
+                                _getAddressFromLatLng(newPosition);
                               },
                             ),
                           ],
@@ -257,6 +291,7 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
                                     _selectedLocation = newPosition;
                                   },
                                 );
+                                _getAddressFromLatLng(newPosition);
                               },
                             ),
                           ],
@@ -381,12 +416,14 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
                             addressLine1: _searchController.text.trim(),
                             postalCode: _postalCode.text.trim(),
                             addressModelDefault: locationController.isDefault,
-                            deliveryInstructions: _instructions.text ?? "",
-                            latitude: _selectedLocation!.latitude,
-                            longitude: _selectedLocation!.longitude,
+                            deliveryInstructions: _instructions.text,
+                            latitude: _selectedLocation?.latitude ?? 0.0,
+                            longitude: _selectedLocation?.longitude ?? 0.0,
                           );
 
-                          String data = addressModelToJson(model);
+                          // Convert model to JSON and send to backend
+                          locationController
+                              .addAddress(addressModelToJson(model));
                         }
                       },
                       height: 45,

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common_widgets/round_icon_button.dart';
-import 'package:food_delivery_app/view/cart/cart.dart';
+import 'package:food_delivery_app/view/cart/cart_page.dart';
+import 'package:get/get.dart';
 
 class ItemDetailsView extends StatefulWidget {
   const ItemDetailsView({super.key});
@@ -461,11 +462,12 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                                 "assets/iimg/shopping_add.png",
                                             color: Tcolor.primary,
                                             onPressed: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const MyOrderView()));
+                                              Get.to(
+                                                () => const CartPage(),
+                                                preventDuplicates: true,
+                                                transition:
+                                                    Transition.rightToLeft,
+                                              );
                                             }),
                                       )
                                     ],
@@ -476,7 +478,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const MyOrderView()));
+                                              const CartPage()));
                                 },
                                 child: Container(
                                   width: 45,
@@ -548,7 +550,7 @@ class _ItemDetailsViewState extends State<ItemDetailsView> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const MyOrderView(),
+                              builder: (context) => const CartPage(),
                             ),
                           );
                         },

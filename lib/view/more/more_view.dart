@@ -4,7 +4,7 @@ import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common_widgets/general_app_bar.dart';
 import 'package:food_delivery_app/view/more/about_us_view.dart';
 import 'package:food_delivery_app/view/more/inbox_view.dart';
-import 'package:food_delivery_app/view/cart/cart.dart';
+import 'package:food_delivery_app/view/cart/cart_page.dart';
 import 'package:food_delivery_app/view/more/notifications_view.dart';
 import 'package:food_delivery_app/view/more/payment_details_view.dart';
 
@@ -47,7 +47,7 @@ class _MoreViewState extends State<MoreView> {
   // Map to handle navigation based on index
   final Map<String, Widget> navigationMap = {
     '1': const PaymentDetailsView(),
-    '2': const MyOrderView(),
+    '2': const CartPage(),
     '3': const NotificationsView(),
     '4': const InboxView(),
     '5': const AboutUsView(),

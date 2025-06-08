@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 const String appBaseUrl = 'http://localhost:6013';
 String googleApiKey = 'AIzaSyD_IyXT12elpZ2KvqojoAyQjAyeHiTpuVY';
+const Color offWhite = Color(0xFFFAF9F6);
 
 final List<String> verificationReasons = [
   'Real-time Updates: Get instant notifications for your order status.',

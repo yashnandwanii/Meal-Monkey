@@ -5,6 +5,7 @@ import 'package:food_delivery_app/common/constants.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:get_storage/get_storage.dart';
 
 class UserLocationController extends GetxController {
   RxInt _tabIndex = 0.obs;
@@ -37,6 +38,48 @@ class UserLocationController extends GetxController {
 
   set setPostalCode(String value) {
     _address.value = value;
+  }
+
+  Future<void> addAddress(String addressData) async {
+    try {
+      final box = GetStorage();
+      String? accessToken = box.read('token');
+
+      Uri uri = Uri.parse('$appBaseUrl/api/address');
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      };
+
+      var response = await http.post(uri, headers: headers, body: addressData);
+
+      if (response.statusCode == 201) {
+        Get.back();
+        Get.snackbar(
+          'Success',
+          'Address added successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          'Failed to add address',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'An error occurred while adding address',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
   }
 
   void getUserAddress(LatLng position) async {

@@ -69,7 +69,10 @@ class OfferView extends HookWidget {
                 height: 20.h,
               ),
               isLoading
-                  ? const NearbyShimmer()
+                  ? const NearbyShimmer(
+                      scrollDirection: Axis.vertical,
+                      // Use vertical scroll for the list of offers
+                    )
                   : Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10.w),
                       child: ListView.builder(

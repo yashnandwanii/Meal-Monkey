@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 
-import '../cart/cart.dart';
+import '../cart/cart_page.dart';
 
 class InboxView extends StatefulWidget {
   const InboxView({super.key});
@@ -115,7 +115,7 @@ class _InboxViewState extends State<InboxView> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const MyOrderView()));
+                                builder: (context) => const CartPage()));
                       },
                       icon: Image.asset(
                         "assets/iimg/shopping_cart.png",

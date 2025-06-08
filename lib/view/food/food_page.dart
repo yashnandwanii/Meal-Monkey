@@ -8,6 +8,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:food_delivery_app/common/app_style.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common/constants.dart';
+import 'package:food_delivery_app/view/profile/shipping_address.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:food_delivery_app/common/custom_button.dart';
 import 'package:food_delivery_app/common/custom_text_field.dart';
@@ -35,14 +36,10 @@ class _FoodPageState extends State<FoodPage> {
 
   void handlePlaceOrder() {
     //final controller = Get.find<FoodsController>();
-
-    Get.snackbar(
-      'Order Placed',
-      'Your order has been placed successfully',
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.green,
-      colorText: Colors.white,
-      duration: const Duration(seconds: 2),
+    Get.to(
+      () => const ShippingAddressPage(),
+      duration: const Duration(milliseconds: 900),
+      transition: Transition.downToUp,
     );
   }
 

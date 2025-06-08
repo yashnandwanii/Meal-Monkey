@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/controllers/phone_verification_controller.dart';
 import 'package:food_delivery_app/services/verification_services.dart';
-import 'package:food_delivery_app/view/cart/cart.dart';
+import 'package:food_delivery_app/view/cart/cart_page.dart';
 import 'package:get/get.dart';
 import 'package:phone_otp_verification/phone_verification.dart';
 
@@ -35,7 +35,7 @@ class _PhoneVerificationPageState extends State<PhoneVerificationPage> {
       code,
     );
     Get.to(
-      () => const MyOrderView(),
+      () => const CartPage(),
       transition: Transition.rightToLeft,
       duration: const Duration(milliseconds: 500),
     );

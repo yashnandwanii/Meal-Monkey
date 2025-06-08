@@ -3,7 +3,7 @@ import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common_widgets/round_button.dart';
 import 'package:food_delivery_app/common_widgets/round_icon_button.dart';
 import 'package:food_delivery_app/view/more/add_card_view.dart';
-import 'package:food_delivery_app/view/cart/cart.dart';
+import 'package:food_delivery_app/view/cart/cart_page.dart';
 
 class PaymentDetailsView extends StatefulWidget {
   const PaymentDetailsView({
@@ -66,7 +66,7 @@ class _PaymentDetailsViewState extends State<PaymentDetailsView> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const MyOrderView(),
+                            builder: (context) => const CartPage(),
                           ),
                         );
                       },

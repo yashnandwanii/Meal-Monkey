@@ -4,7 +4,8 @@ import 'package:food_delivery_app/common/shimmers/shimmer_widget.dart';
 
 
 class FoodListShimmer extends StatelessWidget {
-  const FoodListShimmer({super.key});
+  const FoodListShimmer({super.key, this.scrollDirection = Axis.horizontal});
+  final Axis scrollDirection;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class FoodListShimmer extends StatelessWidget {
       height: 192.h,
       width: width,
       child: ListView.builder(
-        scrollDirection: Axis.horizontal, // 👈 Fixed: Horizontal scrolling
+        scrollDirection: scrollDirection,
         itemCount: 5, // Shimmer placeholders, adjust as needed
         padding: EdgeInsets.only(left: 12.w),
         itemBuilder: (context, index) {

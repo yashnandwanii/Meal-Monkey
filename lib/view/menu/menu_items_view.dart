@@ -3,7 +3,7 @@ import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common_widgets/menu_item_row.dart';
 import 'package:food_delivery_app/common_widgets/round_textfield.dart';
 import 'package:food_delivery_app/view/menu/item_details_view.dart';
-import 'package:food_delivery_app/view/cart/cart.dart';
+import 'package:food_delivery_app/view/cart/cart_page.dart';
 
 class MenuItemView extends StatefulWidget {
   final Map mObj;
@@ -137,7 +137,7 @@ class _MenuItemViewState extends State<MenuItemView> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const MyOrderView(),
+                            builder: (context) => const CartPage(),
                           ),
                         );
                       },

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 
-import '../cart/cart.dart';
+import '../cart/cart_page.dart';
 
 class AboutUsView extends StatefulWidget {
   const AboutUsView({super.key});
@@ -60,7 +60,7 @@ class _AboutUsViewState extends State<AboutUsView> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const MyOrderView()));
+                                builder: (context) => const CartPage()));
                       },
                       icon: Image.asset(
                         "assets/iimg/shopping_cart.png",
