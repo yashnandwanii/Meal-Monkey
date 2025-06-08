@@ -83,7 +83,7 @@ class _CustomAppbarState extends State<CustomAppbar> {
 
       controller.getUserAddress(currentLocation);
     } catch (e) {
-      print("Error getting location: $e");
+      debugPrint("Error getting location: $e");
     }
   }
 

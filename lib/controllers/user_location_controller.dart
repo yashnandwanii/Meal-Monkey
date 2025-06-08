@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/constants.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -60,7 +61,14 @@ class UserLocationController extends GetxController {
         }
       }
     } else {
-      print('Failed to fetch address: ${response.statusCode}');
+      Get.snackbar(
+        'Error',
+        'Failed to fetch address. Please try again.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      debugPrint('Error fetching address: ${response.statusCode}');
     }
   }
 }
