@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common_widgets/tab_button.dart';
+import 'package:food_delivery_app/view/cart/cart_page.dart';
 import 'package:food_delivery_app/view/home/homeview.dart';
 import 'package:food_delivery_app/view/menu/menu_view.dart';
-import 'package:food_delivery_app/view/more/more_view.dart';
 import 'package:food_delivery_app/view/offer/offer_view.dart';
 import 'package:food_delivery_app/view/profile/profile_page.dart';
 
@@ -101,37 +101,37 @@ class _MainTabviewState extends State<MainTabview> {
                 width: 40,
               ),
               TabButton(
-                title: 'Profile',
+                title: 'Cart',
                 onTap: () {
                   if (selectTab != 3) {
                     selectTab = 3;
-                    selectPageView = const ProfilePage();
+                    selectPageView = const CartPage();
                   }
                   if (mounted) {
                     setState(() {
                       selectTab = 3;
+                      selectPageView = const CartPage();
+                    });
+                  }
+                },
+                icon: 'tab_cart',
+                isSelected: selectTab == 3,
+              ),
+              TabButton(
+                title: 'Profile',
+                onTap: () {
+                  if (selectTab != 4) {
+                    selectTab = 4;
+                    selectPageView = const ProfilePage();
+                  }
+                  if (mounted) {
+                    setState(() {
+                      selectTab = 4;
                       selectPageView = const ProfilePage();
                     });
                   }
                 },
                 icon: 'tab_profile',
-                isSelected: selectTab == 3,
-              ),
-              TabButton(
-                title: 'More',
-                onTap: () {
-                  if (selectTab != 4) {
-                    selectTab = 4;
-                    selectPageView = const MoreView();
-                  }
-                  if (mounted) {
-                    setState(() {
-                      selectTab = 4;
-                      selectPageView = const MoreView();
-                    });
-                  }
-                },
-                icon: 'tab_more',
                 isSelected: selectTab == 4,
               ),
             ],
