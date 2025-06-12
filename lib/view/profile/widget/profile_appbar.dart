@@ -3,6 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:food_delivery_app/common/app_style.dart';
 import 'package:food_delivery_app/common/reusable_text.dart';
+import 'package:food_delivery_app/view/auth/login/welcome_view.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class ProfileAppbar extends StatelessWidget {
   const ProfileAppbar({super.key});
@@ -14,7 +17,53 @@ class ProfileAppbar extends StatelessWidget {
       elevation: 0,
       leading: GestureDetector(
         onTap: () {
-          // logout Function
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                titleTextStyle: appBarTextStyle(
+                  18,
+                  Colors.black,
+                  FontWeight.bold,
+                ),
+                contentTextStyle: appBarTextStyle(
+                  16,
+                  Colors.black54,
+                  FontWeight.normal,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                backgroundColor: Colors.white,
+                iconColor: Colors.black,
+                actionsAlignment: MainAxisAlignment.center,
+                actionsPadding: EdgeInsets.symmetric(vertical: 10.h),
+                title: const Text("Logout"),
+                content: const Text("Are you sure you want to logout?"),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    child: const Text(
+                      "Cancel",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      GetStorage().remove('token');
+                      Get.offAll(() => const WelcomeView());
+                    },
+                    child: const Text(
+                      "Logout",
+                      style: TextStyle(color: Colors.green),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
         },
         child: Icon(
           AntDesign.logout,

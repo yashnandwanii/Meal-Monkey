@@ -8,6 +8,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:food_delivery_app/common/app_style.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common/constants.dart';
+import 'package:food_delivery_app/models/cart_request.dart';
 import 'package:food_delivery_app/view/profile/shipping_address.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:food_delivery_app/common/custom_button.dart';
@@ -20,6 +21,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:food_delivery_app/view/auth/phone_verification_page.dart';
 import 'package:food_delivery_app/view/restaurent/restaurent_page.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 
 class FoodPage extends StatefulHookWidget {
   const FoodPage({super.key, required this.food});
@@ -33,6 +35,7 @@ class FoodPage extends StatefulHookWidget {
 class _FoodPageState extends State<FoodPage> {
   final TextEditingController _searchController = TextEditingController();
   final PageController _pageController = PageController();
+  final controller = Get.put(FoodsController());
 
   void handlePlaceOrder() {
     //final controller = Get.find<FoodsController>();
@@ -41,6 +44,24 @@ class _FoodPageState extends State<FoodPage> {
       duration: const Duration(milliseconds: 900),
       transition: Transition.downToUp,
     );
+  }
+
+  void handleAddToCart() {
+    final token = GetStorage().read<String>('token');
+    if (token == null) {
+      Get.snackbar(
+        'Error',
+        'You need to login to add items to the cart',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+    // Logic to add item to cart
+    // controller.addToCart(
+      
+    // );
+
+    // This can be implemented later
   }
 
   @override
@@ -428,7 +449,7 @@ class _FoodPageState extends State<FoodPage> {
                           backgroundColor: Colors.deepPurple,
                           child: IconButton(
                             onPressed: () {
-                              // Add your order placement logic here
+                              // add to cart
                             },
                             icon: const Icon(
                               Ionicons.cart,

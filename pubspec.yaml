@@ -1,7 +1,6 @@
 name: food_delivery_app
 description: "A new Flutter project."
 
-# Prevents accidental publishing to pub.dev
 publish_to: "none"
 
 version: 1.0.0+1
@@ -36,14 +35,12 @@ dependencies:
   lottie: ^3.3.1
   get_storage: ^2.1.1
   flutter_otp_text_field: ^1.5.1+1
-  
-  
+
   google_sign_in: ^6.2.1
   google_maps_flutter: ^2.12.2
   geolocator: ^14.0.1
   firebase_auth: ^5.6.0
   firebase_core: ^3.14.0
-  
 
 dev_dependencies:
   flutter_test:
@@ -57,6 +54,7 @@ flutter:
     - assets/iimg/
     - .env
     - assets/
+    - assets/empty_cart.json
 
   fonts:
     - family: Metropolis

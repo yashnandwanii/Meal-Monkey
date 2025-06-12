@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/constants.dart';
 import 'package:food_delivery_app/models/addresses_response.dart';
 import 'package:food_delivery_app/models/api_error.dart';
@@ -9,6 +10,26 @@ import 'dart:convert';
 
 FetchHook useFetchAllAddresses() {
   final box = GetStorage();
+
+  box.getKeys().forEach((key) {
+    debugPrint('Key: $key, Value: ${box.read(key)}');
+  });
+
+  bool isTokenExpired(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) return true;
+
+      final payload = json
+          .decode(utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))));
+      final exp = payload['exp'];
+      final expiryDate = DateTime.fromMillisecondsSinceEpoch(exp * 1000);
+      return DateTime.now().isAfter(expiryDate);
+    } catch (e) {
+      return true; // malformed token
+    }
+  }
+
   final addresses = useState<List<AddressResponse>?>(null);
   final isLoading = useState<bool>(false);
   final error = useState<Exception?>(null);
@@ -16,11 +37,7 @@ FetchHook useFetchAllAddresses() {
 
   Future<void> fetchData() async {
     String? accessToken = box.read('token');
-    if (accessToken == null) {
-      error.value = Exception('User is not authenticated');
-      isLoading.value = false;
-      return;
-    }
+    
     Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $accessToken',
@@ -29,6 +46,8 @@ FetchHook useFetchAllAddresses() {
     try {
       Uri url = Uri.parse('$appBaseUrl/api/address/all');
       final response = await http.get(url, headers: headers);
+      debugPrint('Response status: ${response.statusCode}');
+      debugPrint('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         addresses.value = addressResponseFromJson(response.body);

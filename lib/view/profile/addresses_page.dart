@@ -13,7 +13,6 @@ class AddressPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final hookResults = useFetchAllAddresses();
-
     final List<AddressResponse>? addresses = hookResults.data ?? [];
     final bool isLoading = hookResults.isLoading;
 

@@ -37,6 +37,7 @@ class LoginController extends GetxController {
         String userId = data.id;
         String userData = jsonEncode(data);
 
+        box.write('currentUserId', userId);
         box.write(userId, userData);
         box.write('token', data.token);
         box.write('userId', userId);

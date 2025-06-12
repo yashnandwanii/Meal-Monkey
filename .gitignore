@@ -33,7 +33,9 @@ migrate_working_dir/
 .pub/
 /build/
 firebase.json
-
+*/food_delivery_app/lib/common/constants.dart
+food_delivery_app/lib/common/constants.dart
+*food_delivery_app/lib/common/constants.dart
 # Symbolication related
 app.*.symbols
 
