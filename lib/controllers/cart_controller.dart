@@ -14,10 +14,8 @@ class CartController extends GetxController {
 
   void addToCart(String cart) async {
     setLoading = true;
-
     String token = box.read('token');
-
-    var uri = Uri.parse('$appBaseUrl/api/cart/add');
+    var uri = Uri.parse('$appBaseUrl/api/cart');
 
     Map<String, String> headers = {
       'Content-Type': 'application/json',
@@ -26,6 +24,9 @@ class CartController extends GetxController {
 
     try {
       var response = await http.post(uri, headers: headers, body: cart);
+      debugPrint('Response status: ${response.statusCode}');
+      debugPrint('Response body: ${response.body}');
+      debugPrint('Request body: $cart');
 
       if (response.statusCode == 201) {
         setLoading = false;
@@ -67,12 +68,12 @@ class CartController extends GetxController {
     }
   }
 
-  void removeFromCart(String productId) async {
+  void removeFromCart(String productId, Function refetch) async {
     setLoading = true;
 
     String token = box.read('token');
 
-    var uri = Uri.parse('$appBaseUrl/api/cart/delete/$productId');
+    var uri = Uri.parse('$appBaseUrl/api/cart/$productId');
 
     Map<String, String> headers = {
       'Content-Type': 'application/json',
@@ -85,8 +86,15 @@ class CartController extends GetxController {
         headers: headers,
       );
 
+      debugPrint('Response status: ${response.statusCode}');
+      debugPrint('Response body: ${response.body}');
+
       if (response.statusCode == 200) {
         setLoading = false;
+        
+        await refetch();
+
+        debugPrint('Product removed from cart successfully');
         Get.snackbar(
           'Removed from Cart',
           'Product has been removed from your cart.',

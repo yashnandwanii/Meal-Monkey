@@ -16,3 +16,7 @@ final List<String> verificationReasons = [
 final width =
     // ignore: deprecated_member_use
     MediaQueryData.fromView(WidgetsBinding.instance.window).size.width;
+
+final height =
+    // ignore: deprecated_member_use
+    MediaQueryData.fromView(WidgetsBinding.instance.window).size.height;

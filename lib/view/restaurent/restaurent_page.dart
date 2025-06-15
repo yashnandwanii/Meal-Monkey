@@ -102,13 +102,17 @@ class _RestaurentPageState extends State<RestaurentPage>
               padding: EdgeInsets.symmetric(horizontal: 8.w),
               child: Column(
                 children: [
-                  const RowText(
-                      first: 'Distance to Restaurent', second: '2.7 km'),
-                  SizedBox(height: 3.h),
-                  const RowText(first: 'Estimated Price', second: "\$12.00"),
-                  SizedBox(height: 3.h),
-                  const RowText(first: 'Estimated Time', second: '30 min'),
-                  SizedBox(height: 3.h),
+                  RowText(
+                      first: 'Business Hours',
+                      second: widget.restaurent?.businessHours ??
+                          '9:00 AM - 11:00 PM'),
+                  SizedBox(height: 5.h),
+                  const RowText(first: 'Estimated Price', second: '₹ 200'),
+                  SizedBox(height: 5.h),
+                  RowText(
+                      first: 'Estimated Time',
+                      second: widget.restaurent?.time ?? '30 min'),
+                  SizedBox(height: 5.h),
                   const Divider(
                     thickness: 0.7,
                   )

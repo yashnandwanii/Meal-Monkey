@@ -1,6 +1,3 @@
-// ignore_for_file: unrelated_type_equality_checks
-
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,9 +5,14 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:food_delivery_app/common/app_style.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common/constants.dart';
+import 'package:food_delivery_app/controllers/cart_controller.dart';
+import 'package:food_delivery_app/controllers/login_controller.dart';
 import 'package:food_delivery_app/models/cart_request.dart';
-import 'package:food_delivery_app/view/profile/shipping_address.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:food_delivery_app/models/login_response.dart';
+import 'package:food_delivery_app/models/order_request.dart';
+import 'package:food_delivery_app/models/restaurents.dart';
+import 'package:food_delivery_app/view/auth/login/login_view.dart';
+import 'package:food_delivery_app/view/orders/order_page.dart';
 import 'package:food_delivery_app/common/custom_button.dart';
 import 'package:food_delivery_app/common/custom_text_field.dart';
 import 'package:food_delivery_app/common/reusable_text.dart';
@@ -21,7 +23,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:food_delivery_app/view/auth/phone_verification_page.dart';
 import 'package:food_delivery_app/view/restaurent/restaurent_page.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 
 class FoodPage extends StatefulHookWidget {
   const FoodPage({super.key, required this.food});
@@ -33,36 +34,9 @@ class FoodPage extends StatefulHookWidget {
 }
 
 class _FoodPageState extends State<FoodPage> {
-  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _preferences = TextEditingController();
   final PageController _pageController = PageController();
   final controller = Get.put(FoodsController());
-
-  void handlePlaceOrder() {
-    //final controller = Get.find<FoodsController>();
-    Get.to(
-      () => const ShippingAddressPage(),
-      duration: const Duration(milliseconds: 900),
-      transition: Transition.downToUp,
-    );
-  }
-
-  void handleAddToCart() {
-    final token = GetStorage().read<String>('token');
-    if (token == null) {
-      Get.snackbar(
-        'Error',
-        'You need to login to add items to the cart',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-      return;
-    }
-    // Logic to add item to cart
-    // controller.addToCart(
-      
-    // );
-
-    // This can be implemented later
-  }
 
   @override
   void initState() {
@@ -82,7 +56,13 @@ class _FoodPageState extends State<FoodPage> {
   @override
   Widget build(BuildContext context) {
     final hookResult = usefetchRestaurent(widget.food.restaurent);
-    final controller = Get.find<FoodsController>();
+    LoginResponse? user;
+    final controller = Get.put(FoodsController());
+    RestaurentsModel? restaurent = hookResult.data;
+    final loginController = Get.put(LoginController());
+    final cartController = Get.put(CartController());
+
+    user = loginController.getUserInfo();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -133,6 +113,7 @@ class _FoodPageState extends State<FoodPage> {
                                 width: 8.w,
                                 height: 8.h,
                                 decoration: BoxDecoration(
+                                  // ignore: unrelated_type_equality_checks
                                   color: controller.currentIndex == index
                                       ? Colors.red
                                       : Colors.grey,
@@ -239,7 +220,7 @@ class _FoodPageState extends State<FoodPage> {
                         final tag = widget.food.foodTags[index];
                         return Container(
                           height: 20.h,
-                          width: 50.w,
+                          width: 80.w,
                           margin: EdgeInsets.only(right: 5.w),
                           decoration: BoxDecoration(
                             color: Tcolor.primary.withValues(alpha: 0.3),
@@ -278,9 +259,6 @@ class _FoodPageState extends State<FoodPage> {
                 SizedBox(
                   height: 10.h,
                 ),
-                SizedBox(
-                  height: 20.h,
-                ),
                 Obx(
                   () => Column(
                     children: List.generate(
@@ -317,11 +295,15 @@ class _FoodPageState extends State<FoodPage> {
                           onChanged: (bool? value) {
                             additive.toggleChecked();
                             controller.getTotalPrice();
+                            controller.getCartAdditives();
                           },
                         );
                       },
                     ),
                   ),
+                ),
+                SizedBox(
+                  height: 20.h,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -386,7 +368,7 @@ class _FoodPageState extends State<FoodPage> {
                 SizedBox(
                   height: 65.h,
                   child: CustomSearchField(
-                    controller: _searchController,
+                    controller: _preferences,
                     hintText: 'Add a note with your order',
                     onEditingComplete: () {
                       FocusScope.of(context).unfocus();
@@ -408,25 +390,32 @@ class _FoodPageState extends State<FoodPage> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          final box = GetStorage();
-                          final userId = box.read('userId');
-                          if (userId != null) {
-                            final userData = box.read(userId);
-                            if (userData != null) {
-                              final Map<String, dynamic> user =
-                                  json.decode(userData);
-                              if (user['phoneVerification'] == true) {
-                                // Phone is verified, proceed with order
-                                handlePlaceOrder();
-                              } else {
-                                // Phone not verified, show verification sheet
-                                _showVerificationSheet(context).then((value) {
-                                  if (value != null) {
-                                    Get.back();
-                                  }
-                                });
-                              }
-                            }
+                          if (user == null) {
+                            Get.to(() => const LoginView());
+                          } else if (user.verification == false) {
+                            _showVerificationSheet(context);
+                          } else {
+                            double totalPrice = (widget.food.price +
+                                    controller.totalAdditivesPrice) *
+                                controller.count.value;
+                            OrderItem orderItem = OrderItem(
+                              foodId: widget.food.id,
+                              quantity: controller.count.value,
+                              price: totalPrice,
+                              additives: controller.getCartAdditives(),
+                              instructions: _preferences.text,
+                            );
+
+                            // Create Order Item
+                            Get.to(
+                              () => OrderPage(
+                                item: orderItem,
+                                restaurant: restaurent!,
+                                food: widget.food,
+                              ),
+                              transition: Transition.cupertino,
+                              duration: const Duration(milliseconds: 900),
+                            );
                           }
                         },
                         child: Padding(
@@ -449,7 +438,20 @@ class _FoodPageState extends State<FoodPage> {
                           backgroundColor: Colors.deepPurple,
                           child: IconButton(
                             onPressed: () {
-                              // add to cart
+                              double totalPrice = (widget.food.price +
+                                      controller.totalAdditivesPrice) *
+                                  controller.count.value;
+                              debugPrint('Total Price: $totalPrice');
+                              var data = CartRequest(
+                                  productId: widget.food.id,
+                                  additives: controller.getCartAdditives(),
+                                  quantity: controller.count.value,
+                                  totalPrice: totalPrice);
+                              debugPrint('Cart Data: $data');
+                              String cart = cartRequestToJson(data);
+                              debugPrint('Cart JSON: $cart');
+
+                              cartController.addToCart(cart);
                             },
                             icon: const Icon(
                               Ionicons.cart,

@@ -30,7 +30,11 @@ class NearbyRestaurents extends HookWidget {
                   RestaurentsModel restaurent = restaurents[i];
                   return RestaurentWidget(
                     onTap: () {
-                      Get.to(() => {RestaurentPage(restaurent: restaurent)});
+                      Get.to(
+                        () => RestaurentPage(restaurent: restaurent),
+                        transition: Transition.rightToLeft,
+                        duration: const Duration(milliseconds: 500),
+                      );
                     },
                     image: restaurent.imageUrl,
                     logo: restaurent.logoUrl,

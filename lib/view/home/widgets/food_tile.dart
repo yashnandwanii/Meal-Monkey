@@ -7,6 +7,8 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:food_delivery_app/common/app_style.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common/reusable_text.dart';
+import 'package:food_delivery_app/controllers/cart_controller.dart';
+import 'package:food_delivery_app/models/cart_request.dart';
 import 'package:food_delivery_app/models/foods.dart';
 import 'package:food_delivery_app/view/food/food_page.dart';
 import 'package:get/get.dart';
@@ -19,6 +21,7 @@ class FoodTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(CartController());
     return GestureDetector(
       onTap: () {
         Get.to(
@@ -167,7 +170,24 @@ class FoodTile extends StatelessWidget {
             right: 75.w,
             top: 6.h,
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                var data = CartRequest(
+                  productId: food.id,
+                  additives: [],
+                  quantity: 1,
+                  totalPrice: food.price,
+                );
+
+                String cart = cartRequestToJson(data);
+                controller.addToCart(cart);
+                Get.snackbar(
+                  "Added to Cart",
+                  "${food.title} has been added to your cart.",
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.green.withValues(alpha: 0.8),
+                  colorText: Colors.white,
+                );
+              },
               child: Container(
                 width: 19.w,
                 height: 19.h,

@@ -7,30 +7,29 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:food_delivery_app/common/app_style.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common/reusable_text.dart';
+import 'package:food_delivery_app/controllers/cart_controller.dart';
 import 'package:food_delivery_app/models/cart_response.dart';
+import 'package:get/get.dart';
 
 class CartTile extends StatelessWidget {
-  const CartTile({super.key, required this.cart, this.color});
+  const CartTile({super.key, required this.cart, this.color, this.refetch});
 
   final CartResponse cart;
   final Color? color;
+  final Function? refetch;
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(CartController());
     return GestureDetector(
-      onTap: () {
-        // Get.to(
-        //   () => FoodPage(food: cart),
-        //   transition: Transition.rightToLeft,
-        // );
-      },
+      onTap: () {},
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
           Container(
             margin: EdgeInsets.only(bottom: 8.h),
             width: MediaQuery.of(context).size.width,
-            height: 70.h,
+            height: 80.h,
             decoration: BoxDecoration(
               color: color ?? Colors.grey.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(9.r),
@@ -68,7 +67,7 @@ class CartTile extends StatelessWidget {
                                   color: Tcolor.primary,
                                 );
                               },
-                              itemSize: 15.r,
+                              itemSize: 12.r,
                               rating: 5,
                               unratedColor: Colors.white54,
                             ),
@@ -141,7 +140,7 @@ class CartTile extends StatelessWidget {
           ),
           Positioned(
             right: 5.w,
-            top: 6.h,
+            top: 30.h,
             child: Container(
               width: 60.w,
               height: 19.h,
@@ -163,19 +162,21 @@ class CartTile extends StatelessWidget {
           ),
           Positioned(
             right: 75.w,
-            top: 6.h,
+            top: 30.h,
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                controller.removeFromCart(cart.id, refetch!);
+              },
               child: Container(
                 width: 19.w,
                 height: 19.h,
                 decoration: BoxDecoration(
-                  color: Colors.orange,
+                  color: Colors.redAccent,
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Center(
                   child: Icon(
-                    MaterialCommunityIcons.cart_plus,
+                    MaterialCommunityIcons.delete,
                     size: 15.h,
                     color: Colors.white,
                   ),

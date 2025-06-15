@@ -10,7 +10,7 @@ class CartResponse {
   final String id;
   final ProductId productId;
   final List<String> additives;
-  final int totalPrice;
+  final double totalPrice;
   final int quantity;
 
   CartResponse({

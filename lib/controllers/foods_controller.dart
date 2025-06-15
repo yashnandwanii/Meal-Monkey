@@ -142,6 +142,18 @@ class FoodsController extends GetxController {
     }
   }
 
+  List<String> getCartAdditives() {
+    List<String> additives = [];
+    for (var additive in additivesList) {
+      if (additive.isChecked.value && !additives.contains(additive.title)) {
+        additives.add(additive.title);
+      }else if (!additive.isChecked.value && additives.contains(additive.title)) {
+        additives.remove(additive.title);
+      }
+    }
+    return additives;
+  }
+
   double get totalAdditivesPrice => _totalPrice.value;
 
   set setTotalAdditivesPrice(double price) {

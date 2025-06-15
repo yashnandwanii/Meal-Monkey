@@ -355,81 +355,79 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
             ),
             BackgroundContainer(
               color: Color(0xFFFAF9F6),
-              child: Container(
-                child: ListView(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  children: [
-                    InputField(
-                      hintText: 'Address',
-                      controller: _searchController,
-                      leadingIcon: Icons.map,
-                      keyboardType: TextInputType.number,
-                    ),
-                    SizedBox(height: 15.h),
-                    InputField(
-                      hintText: 'Postal Code',
-                      controller: _postalCode,
-                      leadingIcon: Ionicons.location_sharp,
-                      keyboardType: TextInputType.text,
-                    ),
-                    SizedBox(height: 15.h),
-                    InputField(
-                      hintText: 'Instructions (optional)',
-                      controller: _instructions,
-                      leadingIcon: Ionicons.chatbubble,
-                      keyboardType: TextInputType.text,
-                    ),
-                    SizedBox(height: 15.h),
-                    Padding(
-                      padding: EdgeInsets.only(left: 8.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ReusableText(
-                            text: 'Set this as default address?',
-                            style: appBarTextStyle(
-                              12,
-                              Colors.black,
-                              FontWeight.w600,
-                            ),
+              child: ListView(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                children: [
+                  InputField(
+                    hintText: 'Address',
+                    controller: _searchController,
+                    leadingIcon: Icons.map,
+                    keyboardType: TextInputType.number,
+                  ),
+                  SizedBox(height: 15.h),
+                  InputField(
+                    hintText: 'Postal Code',
+                    controller: _postalCode,
+                    leadingIcon: Ionicons.location_sharp,
+                    keyboardType: TextInputType.text,
+                  ),
+                  SizedBox(height: 15.h),
+                  InputField(
+                    hintText: 'Instructions (optional)',
+                    controller: _instructions,
+                    leadingIcon: Ionicons.chatbubble,
+                    keyboardType: TextInputType.text,
+                  ),
+                  SizedBox(height: 15.h),
+                  Padding(
+                    padding: EdgeInsets.only(left: 8.w),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ReusableText(
+                          text: 'Set this as default address?',
+                          style: appBarTextStyle(
+                            12,
+                            Colors.black,
+                            FontWeight.w600,
                           ),
-                          Obx(
-                            () => CupertinoSwitch(
-                                activeTrackColor: Tcolor.primary,
-                                thumbColor: Colors.grey,
-                                value: locationController.isDefault,
-                                onChanged: (value) {
-                                  locationController.isDefault = value;
-                                  debugPrint('Default address set to: $value');
-                                }),
-                          ),
-                        ],
-                      ),
+                        ),
+                        Obx(
+                          () => CupertinoSwitch(
+                              activeTrackColor: Tcolor.primary,
+                              thumbColor: Colors.grey,
+                              value: locationController.isDefault,
+                              onChanged: (value) {
+                                locationController.isDefault = value;
+                                debugPrint('Default address set to: $value');
+                              }),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 15.h),
-                    CustomButton(
-                      text: 'S U B M I T',
-                      ontap: () {
-                        if (_searchController.text.isNotEmpty &&
-                            _postalCode.text.isNotEmpty) {
-                          AddressModel model = AddressModel(
-                            addressLine1: _searchController.text.trim(),
-                            postalCode: _postalCode.text.trim(),
-                            addressModelDefault: locationController.isDefault,
-                            deliveryInstructions: _instructions.text,
-                            latitude: _selectedLocation?.latitude ?? 0.0,
-                            longitude: _selectedLocation?.longitude ?? 0.0,
-                          );
+                  ),
+                  SizedBox(height: 15.h),
+                  CustomButton(
+                    text: 'S U B M I T',
+                    ontap: () {
+                      if (_searchController.text.isNotEmpty &&
+                          _postalCode.text.isNotEmpty) {
+                        AddressModel model = AddressModel(
+                          addressLine1: _searchController.text.trim(),
+                          postalCode: _postalCode.text.trim(),
+                          addressModelDefault: locationController.isDefault,
+                          deliveryInstructions: _instructions.text,
+                          latitude: _selectedLocation?.latitude ?? 0.0,
+                          longitude: _selectedLocation?.longitude ?? 0.0,
+                        );
 
-                          // Convert model to JSON and send to backend
-                          locationController
-                              .addAddress(addressModelToJson(model));
-                        }
-                      },
-                      height: 45,
-                    ),
-                  ],
-                ),
+                        // Convert model to JSON and send to backend
+                        locationController
+                            .addAddress(addressModelToJson(model));
+                      }
+                    },
+                    height: 45,
+                  ),
+                ],
               ),
             )
           ],

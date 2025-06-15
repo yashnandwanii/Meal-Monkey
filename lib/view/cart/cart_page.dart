@@ -20,6 +20,10 @@ class CartPage extends HookWidget {
     final box = GetStorage();
     final controller = Get.put(LoginController());
 
+    // box.getKeys().forEach((key) {
+    //   debugPrint('Key: $key, Value: ${box.read(key)}');
+    // });
+
     LoginResponse? user;
 
     String? token = box.read('token');
@@ -117,7 +121,14 @@ class CartPage extends HookWidget {
                     itemCount: carts.length,
                     itemBuilder: (context, index) {
                       final cart = carts[index];
-                      return CartTile(cart: cart);
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CartTile(
+                          cart: cart,
+                          color: Colors.white,
+                          refetch: refetch,
+                        ),
+                      );
                     },
                   ),
       ),

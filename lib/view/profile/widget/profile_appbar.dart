@@ -51,8 +51,8 @@ class ProfileAppbar extends StatelessWidget {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {
-                      GetStorage().remove('token');
+                    onPressed: () async {
+                      await GetStorage().erase();
                       Get.offAll(() => const WelcomeView());
                     },
                     child: const Text(

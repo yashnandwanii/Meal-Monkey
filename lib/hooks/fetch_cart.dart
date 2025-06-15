@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:food_delivery_app/common/constants.dart';
 
 import 'package:food_delivery_app/models/api_error.dart';
@@ -33,6 +34,7 @@ FetchHook useFetchCart() {
 
       if (response.statusCode == 200) {
         cart.value = cartResponseFromJson(response.body);
+        debugPrint('Cart data: ${cart.value}');
       } else if (response.statusCode == 400) {
         apiError.value = ApiError.fromJson(json.decode(response.body));
         error.value = null;
