@@ -150,7 +150,7 @@ class CartTile extends StatelessWidget {
               ),
               child: Center(
                 child: ReusableText(
-                  text: "\$ ${cart.totalPrice.toStringAsFixed(2)}",
+                  text: "₹ ${cart.totalPrice.toStringAsFixed(2)}",
                   style: appBarTextStyle(
                     12,
                     Colors.white,

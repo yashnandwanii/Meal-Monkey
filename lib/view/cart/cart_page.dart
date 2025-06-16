@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common/constants.dart';
 import 'package:food_delivery_app/common/shimmers/foodlist_shimmer.dart';
 import 'package:food_delivery_app/controllers/login_controller.dart';
@@ -14,16 +16,13 @@ import 'package:lottie/lottie.dart';
 
 class CartPage extends HookWidget {
   const CartPage({super.key});
+  
+  
 
   @override
   Widget build(BuildContext context) {
     final box = GetStorage();
     final controller = Get.put(LoginController());
-
-    // box.getKeys().forEach((key) {
-    //   debugPrint('Key: $key, Value: ${box.read(key)}');
-    // });
-
     LoginResponse? user;
 
     String? token = box.read('token');
@@ -63,6 +62,9 @@ class CartPage extends HookWidget {
     final isLoading = hookResults.isLoading;
     final refetch = hookResults.refetch;
 
+    
+    
+
     return Scaffold(
       backgroundColor: offWhite,
       appBar: AppBar(
@@ -78,59 +80,85 @@ class CartPage extends HookWidget {
         ],
       ),
       body: SafeArea(
-        child: isLoading
-            ? const FoodListShimmer(scrollDirection: Axis.vertical)
-            : carts.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: 200,
-                          width: 200,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
+        child: Column(
+          children: [
+            Expanded(
+              child: isLoading
+                  ? const FoodListShimmer(scrollDirection: Axis.vertical)
+                  : carts.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                height: 200,
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                alignment: Alignment.center,
+                                child: Lottie.asset(
+                                  'assets/empty_cart.json',
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              const Text(
+                                'Your cart is empty',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              const Text(
+                                'Add some items to your cart',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
-                          alignment: Alignment.center,
-                          child: Lottie.asset(
-                            'assets/empty_cart.json',
-                            fit: BoxFit.contain,
-                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: carts.length,
+                          itemBuilder: (context, index) {
+                            final cart = carts[index];
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CartTile(
+                                cart: cart,
+                                color: Colors.white,
+                                refetch: refetch,
+                              ),
+                            );
+                          },
                         ),
-                        const SizedBox(height: 20),
-                        const Text(
-                          'Your cart is empty',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        const Text(
-                          'Add some items to your cart',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : ListView.builder(
-                    itemCount: carts.length,
-                    itemBuilder: (context, index) {
-                      final cart = carts[index];
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CartTile(
-                          cart: cart,
-                          color: Colors.white,
-                          refetch: refetch,
-                        ),
-                      );
-                    },
+            ),
+            // Bottom Button
+            if (!isLoading && carts.isNotEmpty)
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.only(bottom: 40.h, left: 20.w, right: 20.w),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    backgroundColor: Tcolor.primary,
+                    textStyle: const TextStyle(fontSize: 18),
                   ),
+                  onPressed: () {
+                    //Get.to(()=> const OrderPage(restaurant: , food: null,, item: null,));
+                  },
+                  child: const Text(
+                    'Proceed to Checkout',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

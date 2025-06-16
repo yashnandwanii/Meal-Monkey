@@ -67,7 +67,7 @@ class FoodWidget extends StatelessWidget {
                         ),
                         const Spacer(),
                         ReusableText(
-                          text: '\$$price',
+                          text: '₹ $price',
                           style: appBarTextStyle(
                             12,
                             Tcolor.primary,
