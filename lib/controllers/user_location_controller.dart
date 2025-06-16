@@ -87,31 +87,61 @@ class UserLocationController extends GetxController {
       'https://maps.googleapis.com/maps/api/geocode/json?latlng=${position.latitude},${position.longitude}&key=$googleApiKey',
     );
 
-    final response = await http.get(url);
+    try {
+      final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final responseBody = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
 
-      final address = responseBody['results'][0]['formatted_address'];
-      setAddress = address;
+        if (responseBody['results'] != null &&
+            responseBody['results'].isNotEmpty) {
+          final result = responseBody['results'][0];
 
-      final addressComponents =
-          responseBody['results'][0]['address_components'];
+          // Set formatted address
+          final formattedAddress = result['formatted_address'];
+          if (formattedAddress != null) {
+            setAddress = formattedAddress;
+          }
 
-      for (var component in addressComponents) {
-        if (component['types'].contains('postal_code')) {
-          setPostalCode = component['long_name'];
+          // Extract postal code
+          final addressComponents = result['address_components'];
+          if (addressComponents != null && addressComponents is List) {
+            for (var component in addressComponents) {
+              if (component['types'].contains('postal_code')) {
+                setPostalCode = component['long_name'];
+                break;
+              }
+            }
+          }
+        } else {
+          debugPrint("No address results found");
+          Get.snackbar(
+            'Error',
+            'Could not fetch address details.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
         }
+      } else {
+        debugPrint('Error fetching address: ${response.statusCode}');
+        Get.snackbar(
+          'Error',
+          'Failed to fetch address. Please try again.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
       }
-    } else {
+    } catch (e) {
+      debugPrint("Exception while fetching address: $e");
       Get.snackbar(
-        'Error',
-        'Failed to fetch address. Please try again.',
+        'Exception',
+        'Something went wrong while fetching address.',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
-      debugPrint('Error fetching address: ${response.statusCode}');
     }
   }
 }

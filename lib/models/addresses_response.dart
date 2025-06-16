@@ -12,7 +12,7 @@ class AddressResponse {
   final String userId;
   final String addressLine1;
   final String postalCode;
-  final bool addressResponseDefault;
+  final bool isDefault;
   final String deliveryInstructions;
   final double latitude;
   final double longitude;
@@ -23,7 +23,7 @@ class AddressResponse {
     required this.userId,
     required this.addressLine1,
     required this.postalCode,
-    required this.addressResponseDefault,
+    required this.isDefault,
     required this.deliveryInstructions,
     required this.latitude,
     required this.longitude,
@@ -36,7 +36,7 @@ class AddressResponse {
         userId: json["userId"],
         addressLine1: json["addressLine1"],
         postalCode: json["postalCode"],
-        addressResponseDefault: json["default"],
+        isDefault: json["default"],
         deliveryInstructions: json["deliveryInstructions"],
         latitude: json["latitude"].toDouble(),
         longitude: json["longitude"].toDouble(),
@@ -48,7 +48,7 @@ class AddressResponse {
         "userId": userId,
         "addressLine1": addressLine1,
         "postalCode": postalCode,
-        "default": addressResponseDefault,
+        "default": isDefault,
         "deliveryInstructions": deliveryInstructions,
         "latitude": latitude,
         "longitude": longitude,

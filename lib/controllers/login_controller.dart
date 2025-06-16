@@ -39,6 +39,7 @@ class LoginController extends GetxController {
 
         box.write('currentUserId', userId);
         box.write(userId, userData);
+        box.write('tempUserData', userData);
         box.write('token', data.token);
         box.write('userId', userId);
         box.write('verification', data.verification);

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:food_delivery_app/common/constants.dart';
 import 'package:food_delivery_app/common/custom_container.dart';
 import 'package:food_delivery_app/common/heading.dart';
 import 'package:food_delivery_app/common_widgets/custom_appbar.dart';
 import 'package:food_delivery_app/controllers/category_controller.dart';
-import 'package:food_delivery_app/models/login_response.dart';
 import 'package:food_delivery_app/view/category/all_categories.dart';
 import 'package:food_delivery_app/view/home/all_fastest_foods.dart';
 import 'package:food_delivery_app/view/home/all_nearby_restaurents.dart';
@@ -23,14 +23,21 @@ class Homeview extends StatefulWidget {
 }
 
 class _HomeviewState extends State<Homeview> {
-  final LoginResponse? user = GetStorage().read<LoginResponse>('user');
   final GetStorage box = GetStorage();
-  TextEditingController txtController = TextEditingController();
+
+  final TextEditingController txtController = TextEditingController();
+
+  @override
+  void dispose() {
+    txtController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(CategoryController());
     return Scaffold(
+      backgroundColor: offWhite,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(130.h),
         child: const CustomAppbar(),

@@ -29,7 +29,6 @@ class OrderPage extends StatefulWidget {
 class _OrderPageState extends State<OrderPage> {
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       backgroundColor: Tcolor.primary,
       appBar: AppBar(
@@ -178,10 +177,7 @@ class _OrderPageState extends State<OrderPage> {
               CustomButton(
                 text: 'Proceed To Payment',
                 height: 45,
-                ontap: () {
-                  // Handle order completion logic here
-                  debugPrint('Order completed for ${widget.food.title}');
-                },
+                ontap: () {},
               ),
             ],
           ),
