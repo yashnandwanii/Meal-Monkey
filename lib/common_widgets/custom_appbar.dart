@@ -8,6 +8,7 @@ import 'package:food_delivery_app/controllers/user_location_controller.dart';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../models/login_response.dart';
@@ -40,19 +41,20 @@ class _CustomAppbarState extends State<CustomAppbar> {
   @override
   void initState() {
     super.initState();
+    final box = GetStorage();
+    final jsonUser = box.read('tempUser');
+
+    if (jsonUser != null) {
+      user = LoginResponse.fromJson(jsonUser);
+    }
     _determinePosition();
   }
 
   Future<void> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
-
-    // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
       return Future.error('Location services are disabled.');
     }
 
@@ -60,23 +62,16 @@ class _CustomAppbarState extends State<CustomAppbar> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
         return Future.error('Location permissions are denied');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
       return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+        'Location permissions are permanently denied, we cannot request permissions.',
+      );
     }
     _getCurrentLocation();
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
     return;
   }
 
@@ -122,8 +117,10 @@ class _CustomAppbarState extends State<CustomAppbar> {
                 CircleAvatar(
                   radius: 23.r,
                   backgroundColor: Colors.orange,
-                  backgroundImage: NetworkImage(user?.profile ??
-                      "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png"),
+                  backgroundImage: NetworkImage(
+                    user?.profile ??
+                        "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png",
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 6.h, left: 8.w),
@@ -142,7 +139,9 @@ class _CustomAppbarState extends State<CustomAppbar> {
                       Obx(() {
                         final address = _userLocationController.address;
                         return ReusableText(
-                          text: address,
+                          text: address.isEmpty
+                              ? "Fetching location..."
+                              : address,
                           style: appBarTextStyle(
                             13,
                             Colors.grey,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:food_delivery_app/common/app_style.dart';
 import 'package:food_delivery_app/common/background_container.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
@@ -11,6 +12,7 @@ import 'package:food_delivery_app/models/order_request.dart';
 import 'package:food_delivery_app/models/restaurents.dart';
 import 'package:food_delivery_app/view/orders/widgets/order_tile.dart';
 import 'package:food_delivery_app/view/restaurent/Widgets/row_text.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class OrderPage extends StatefulWidget {
   const OrderPage(
@@ -27,6 +29,59 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPageState extends State<OrderPage> {
+  late Razorpay _razorpay;
+
+  @override
+  void initState() {
+    super.initState();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
+  }
+
+  void _openCheckout(double amount) {
+    var options = {
+      'key': 'rzp_test_1AovirvDbdoNlo', // Use your live/test key
+      'amount': amount.toInt().toString(), // in paise
+      'currency': 'INR',
+      'name': widget.restaurant.title,
+      'description': 'Food Order Payment',
+      'prefill': {
+        'contact': '1234567890',
+        'email': 'yashnandwani47@gmail.com',
+      },
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint("Razorpay error: $e");
+    }
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Fluttertoast.showToast(msg: "Payment Successful: ${response.paymentId}");
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(msg: "Payment Failed: ${response.message}");
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(
+        msg: "External Wallet Selected: ${response.walletName}");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -176,8 +231,10 @@ class _OrderPageState extends State<OrderPage> {
               ),
               CustomButton(
                 text: 'Proceed To Payment',
-                height: 45,
-                ontap: () {},
+                height: 40.h,
+                ontap: () {
+                  _openCheckout(widget.item.price * 100);
+                },
               ),
             ],
           ),
