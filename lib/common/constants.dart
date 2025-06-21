@@ -20,3 +20,11 @@ final width =
 final height =
     // ignore: deprecated_member_use
     MediaQueryData.fromView(WidgetsBinding.instance.window).size.height;
+
+List<String> get orderList => [
+      "All Orders",
+      "Pending",
+      "In Progress",
+      "Completed",
+      "Cancelled",
+    ];
