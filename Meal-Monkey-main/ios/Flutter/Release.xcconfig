@@ -1,0 +1,8 @@
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
+#include "Generated.xcconfig"
+# Include CocoaPods configuration
+# This ensures pods are correctly linked to your project
+# Change "Pods-Runner" to match your Pod target if necessary
+# Example: Pods-YourAppName
+# Don't remove this if using Firebase, Supabase, or other pods.
+#include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"
