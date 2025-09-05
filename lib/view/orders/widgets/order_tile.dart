@@ -11,193 +11,240 @@ import 'package:food_delivery_app/controllers/cart_controller.dart';
 import 'package:food_delivery_app/models/cart_request.dart';
 import 'package:food_delivery_app/models/foods.dart';
 import 'package:get/get.dart';
+import 'package:food_delivery_app/models/order_response.dart';
+import 'package:intl/intl.dart';
 
 class OrderTile extends StatelessWidget {
-  OrderTile({super.key, required this.food, this.color});
+  final OrderResponse order;
+  final VoidCallback? onTap;
 
-  FoodItem food;
-  final Color? color;
+  const OrderTile({
+    super.key,
+    required this.order,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(CartController());
-    return Stack(
-      clipBehavior: Clip.hardEdge,
-      children: [
-        Container(
-          margin: EdgeInsets.only(bottom: 8.h),
-          width: MediaQuery.of(context).size.width,
-          height: 70.h,
-          decoration: BoxDecoration(
-            color: color ?? Colors.grey.withValues(alpha: 0.3),
-            borderRadius: BorderRadius.circular(9.r),
-          ),
-          child: Container(
-            padding: EdgeInsets.all(4.r),
-            child: Row(
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        padding: EdgeInsets.all(16.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8.r),
-                  child: Stack(
-                    children: [
-                      SizedBox(
-                        height: 70.h,
-                        width: 70.w,
-                        child: Image.network(
-                          food.imageUrl[0],
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        child: Container(
-                          padding: EdgeInsets.only(
-                            left: 6.w,
-                            bottom: 2.h,
-                          ),
-                          color: Colors.grey.withValues(alpha: 0.6),
-                          height: 16.h,
-                          width: MediaQuery.of(context).size.width,
-                          child: RatingBarIndicator(
-                            itemBuilder: (context, i) {
-                              return Icon(
-                                Icons.star,
-                                color: Tcolor.primary,
-                              );
-                            },
-                            itemSize: 15.r,
-                            rating: 5,
-                            unratedColor: Colors.white54,
-                          ),
-                        ),
-                      )
-                    ],
+                Expanded(
+                  child: Text(
+                    'Order #${order.id.substring(0, 8)}',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Tcolor.primary,
+                    ),
                   ),
                 ),
-                SizedBox(
-                  width: 8.w,
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+                  decoration: BoxDecoration(
+                    color: _getStatusColor(order.orderStatus),
+                    borderRadius: BorderRadius.circular(20.r),
+                  ),
+                  child: Text(
+                    order.orderStatus,
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ReusableText(
-                      text: food.title,
-                      style: appBarTextStyle(
-                        13,
-                        Colors.black,
-                        FontWeight.w600,
+              ],
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              DateFormat('MMM dd, yyyy - HH:mm').format(order.orderDate),
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: Colors.grey[600],
+              ),
+            ),
+            SizedBox(height: 12.h),
+            ...order.orderItems.map((item) => Padding(
+                  padding: EdgeInsets.only(bottom: 8.h),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 40.w,
+                        height: 40.w,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.r),
+                          color: Colors.grey[200],
+                        ),
+                        child: item.food?.imageUrl.isNotEmpty == true
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(8.r),
+                                child: Image.network(
+                                  item.food!.imageUrl[0],
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Icon(
+                                      Icons.fastfood,
+                                      color: Colors.grey[400],
+                                      size: 20.sp,
+                                    );
+                                  },
+                                ),
+                              )
+                            : Icon(
+                                Icons.fastfood,
+                                color: Colors.grey[400],
+                                size: 20.sp,
+                              ),
                       ),
-                    ),
-                    ReusableText(
-                      text: "Delivery Time: ${food.time}",
-                      style: appBarTextStyle(
-                        11,
-                        Colors.grey,
-                        FontWeight.w400,
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      height: 15.h,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: food.additives.length,
-                        itemBuilder: (context, index) {
-                          var additive = food.additives[index];
-                          return Container(
-                            margin: EdgeInsets.only(right: 5.w),
-                            decoration: BoxDecoration(
-                              color: Colors.blue.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(9.r),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.food?.title ?? 'Food Item',
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                            child: Center(
-                              child: Padding(
-                                padding: EdgeInsets.all(2.h),
-                                child: ReusableText(
-                                  text: additive.title,
-                                  style: appBarTextStyle(
-                                    8,
-                                    Colors.black,
-                                    FontWeight.w400,
-                                  ),
+                            if (item.additives.isNotEmpty)
+                              Text(
+                                'Additives: ${item.additives.join(', ')}',
+                                style: TextStyle(
+                                  fontSize: 11.sp,
+                                  color: Colors.grey[600],
                                 ),
                               ),
+                            Text(
+                              'Qty: ${item.quantity}',
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: Colors.grey[600],
+                              ),
                             ),
-                          );
-                        },
+                          ],
+                        ),
+                      ),
+                      Text(
+                        '\$${item.price.toStringAsFixed(2)}',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Tcolor.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+            SizedBox(height: 12.h),
+            Divider(color: Colors.grey[300]),
+            SizedBox(height: 8.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Total',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      '\$${order.grandTotal.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Tcolor.primary,
                       ),
                     ),
                   ],
-                )
+                ),
+                if (order.rating != null && order.rating! > 0)
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                        size: 16.sp,
+                      ),
+                      SizedBox(width: 4.w),
+                      Text(
+                        order.rating?.toString() ?? '0',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
               ],
             ),
-          ),
-        ),
-        Positioned(
-          right: 5.w,
-          top: 6.h,
-          child: Container(
-            width: 60.w,
-            height: 19.h,
-            decoration: BoxDecoration(
-              color: Colors.lightGreen,
-              borderRadius: BorderRadius.circular(10.r),
-            ),
-            child: Center(
-              child: ReusableText(
-                text: "\$ ${food.price.toStringAsFixed(2)}",
-                style: appBarTextStyle(
-                  12,
-                  Colors.white,
-                  FontWeight.w500,
+            if (order.notes.isNotEmpty) ...[
+              SizedBox(height: 8.h),
+              Container(
+                padding: EdgeInsets.all(12.w),
+                decoration: BoxDecoration(
+                  color: Colors.grey[50],
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Text(
+                  order.notes,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: Colors.grey[700],
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
               ),
-            ),
-          ),
+            ],
+          ],
         ),
-        Positioned(
-          right: 75.w,
-          top: 6.h,
-          child: GestureDetector(
-            onTap: () {
-              var data = CartRequest(
-                productId: food.id,
-                additives: [],
-                quantity: 1,
-                totalPrice: food.price,
-              );
-
-              String cart = cartRequestToJson(data);
-              controller.addToCart(cart);
-              Get.snackbar(
-                "Added to Cart",
-                "${food.title} has been added to your cart.",
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.green.withValues(alpha: 0.8),
-                colorText: Colors.white,
-              );
-            },
-            child: Container(
-              width: 19.w,
-              height: 19.h,
-              decoration: BoxDecoration(
-                color: Colors.orange,
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              child: Center(
-                child: Icon(
-                  MaterialCommunityIcons.cart_plus,
-                  size: 15.h,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'placed':
+        return Colors.orange;
+      case 'preparing':
+        return Colors.blue;
+      case 'ready':
+        return Colors.green;
+      case 'out_for_delivery':
+        return Colors.purple;
+      case 'delivered':
+        return Colors.green;
+      case 'cancelled':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
   }
 }

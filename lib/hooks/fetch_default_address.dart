@@ -17,11 +17,6 @@ FetchHook useFetchDefaultAddress() {
 
   Future<void> fetchData() async {
     String? accessToken = box.read('token');
-    if (accessToken == null) {
-      error.value = Exception('User is not authenticated');
-      isLoading.value = false;
-      return;
-    }
     Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $accessToken',

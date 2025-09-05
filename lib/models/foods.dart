@@ -45,19 +45,19 @@ class FoodItem {
         id: json["_id"],
         title: json["title"],
         time: json["time"],
-        foodTags: List<String>.from(json["foodTags"]),
-        imageUrl: List<String>.from(json["imageUrl"]),
+        foodTags: List<String>.from(json["foodTags"] ?? []),
+        imageUrl: List<String>.from(json["imageUrl"] ?? []),
         category: json["category"],
-        foodType: List<String>.from(json["foodType"]),
+        foodType: List<String>.from(json["foodType"] ?? []),
         code: json["code"],
-        isAvailable: json["isAvailable"],
+        isAvailable: json["isAvailable"] ?? false,
         restaurent: json["restaurent"],
-        price: (json["price"] as num).toDouble(),
-        description: json["description"],
-        rating: (json["rating"] as num).toDouble(),
-        ratingCount: json["ratingCount"],
+        price: (json["price"] as num?)?.toDouble() ?? 0.0,
+        description: json["description"] ?? "",
+        rating: (json["rating"] as num?)?.toDouble() ?? 0.0,
+        ratingCount: (json["ratingCount"] as int?) ?? 0,
         additives: List<Additive>.from(
-            json["additives"].map((x) => Additive.fromJson(x))),
+            (json["additives"] ?? []).map((x) => Additive.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {

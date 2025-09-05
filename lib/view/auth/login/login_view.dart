@@ -75,7 +75,7 @@ class _LoginViewState extends State<LoginView> {
               ),
               const SizedBox(height: 25),
               RoundButton(
-                onPressed: () {
+                onPressed: () async {
                   if (emailController.text.isEmpty ||
                       passwordController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -111,25 +111,32 @@ class _LoginViewState extends State<LoginView> {
                       password: passwordController.text.trim(),
                     );
                     String data = loginModelToJson(model);
-                    controller.loginFunction(data);
-
-                    final user = controller.getUserInfo();
-                    //debugPrint('User Info: ${user?.username}, ${user?.email}');
-
-                    Get.showSnackbar(
-                      GetSnackBar(
-                        title: 'Login Successful',
-                        message: 'Welcome back, ${user?.username}!',
-                        duration: const Duration(seconds: 2),
-                        snackPosition: SnackPosition.TOP,
-                        backgroundColor: Tcolor.primary,
-                        borderColor: Colors.white,
-                      ),
-                    );
-                    Get.offAll(
-                      () => const OnBoardingView(),
-                      transition: Transition.rightToLeft,
-                    );
+                    bool loginSuccess = await controller.loginFunction(data);
+                    
+                    // Only proceed if login was successful
+                    if (loginSuccess) {
+                      final user = controller.getUserInfo();
+                      
+                      if (user != null) {
+                        debugPrint('User Info: ${user.username}, ${user.email}');
+                        
+                        Get.showSnackbar(
+                          GetSnackBar(
+                            title: 'Login Successful',
+                            message: 'Welcome back, ${user.username}!',
+                            duration: const Duration(seconds: 2),
+                            snackPosition: SnackPosition.TOP,
+                            backgroundColor: Tcolor.primary,
+                            borderColor: Colors.white,
+                          ),
+                        );
+                        
+                        Get.offAll(
+                          () => const OnBoardingView(),
+                          transition: Transition.rightToLeft,
+                        );
+                      }
+                    }
                   }
                 },
                 text: controller.isLoading ? 'Loading...' : 'L O G I N',

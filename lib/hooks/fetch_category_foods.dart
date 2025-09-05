@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-FetchFoods useFetchCategoryFoods(String code) {
+FetchFoods useFetchCategoryFoods() {
   final controller = Get.put(CategoryController());
   final foods = useState<List<FoodItem>?>(null);
   final isLoading = useState<bool>(false);
@@ -17,24 +17,49 @@ FetchFoods useFetchCategoryFoods(String code) {
   final apiError = useState<ApiError?>(null);
 
   Future<void> fetchData() async {
+    if (controller.categoryValue.isEmpty) {
+      foods.value = [];
+      //debugPrint('Category value is empty, returning empty list');
+      return;
+    }
+
     isLoading.value = true;
+    //debugPrint('Fetching foods for category: ${controller.categoryValue}');
+
     try {
-      Uri url =
-          Uri.parse('$appBaseUrl/api/food/${controller.categoryValue}/$code');
+      // Use the new category-only endpoint
+      Uri url = Uri.parse(
+          '$appBaseUrl/api/food/category/${controller.categoryValue}');
+      //debugPrint('Requesting URL: $url');
 
       final response = await http.get(url);
 
+      // debugPrint('Response status: ${response.statusCode}');
+      // debugPrint('Response body: ${response.body}');
+
       if (response.statusCode == 200) {
-        //foods.value = foodsModelFromJson(response.body);
         foods.value = foodItemFromJson(response.body);
+        //debugPrint('Category foods: ${foods.value?.length} items found');
+        if (foods.value != null) {
+          for (var food in foods.value!) {
+            // debugPrint(
+            //     'Found food: ${food.title} (category: ${food.category})');
+          }
+        }
+      } else if (response.statusCode == 404) {
+        // No foods found for this category
+        foods.value = [];
+        //debugPrint('No foods found for category: ${controller.categoryValue}');
       } else if (response.statusCode == 400) {
         apiError.value = ApiError.fromJson(json.decode(response.body));
         error.value = null;
+        debugPrint('API Error: ${apiError.value?.message}');
       } else {
-        debugPrint('Error: ${response.statusCode}');
+        throw Exception(
+            'Failed to load category foods: ${response.statusCode}');
       }
     } catch (e) {
-      //print('Exception: $e');
+      debugPrint('Exception in fetchCategoryFoods: $e');
       error.value = e as Exception;
     } finally {
       isLoading.value = false;
@@ -44,7 +69,7 @@ FetchFoods useFetchCategoryFoods(String code) {
   useEffect(() {
     fetchData();
     return null;
-  }, []);
+  }, [controller.categoryValue]);
 
   void refetch() {
     isLoading.value = true;

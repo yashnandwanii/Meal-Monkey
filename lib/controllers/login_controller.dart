@@ -21,7 +21,7 @@ class LoginController extends GetxController {
     _isLoading.value = value;
   }
 
-  void loginFunction(String data) async {
+  Future<bool> loginFunction(String data) async {
     setLoading = true;
 
     Uri uri = Uri.parse('$appBaseUrl/login');
@@ -37,14 +37,28 @@ class LoginController extends GetxController {
         String userId = data.id;
         String userData = jsonEncode(data);
 
+        // Clear all existing user data and tokens first
+        box.erase();
+
+        debugPrint('New login - Token: ${data.token}');
+        debugPrint('New login - User ID: $userId');
+        debugPrint('New login - Email: ${data.email}');
+
+        // Store new user data
         box.write('currentUserId', userId);
         box.write(userId, userData);
         box.write('tempUserData', userData);
         box.write('token', data.token);
         box.write('userId', userId);
         box.write('verification', data.verification);
+        box.write('isLoggedIn', true);
+
+        // Debug: Verify what was actually stored
+        debugPrint('Stored token: ${box.read('token')}');
+        debugPrint('Stored userId: ${box.read('userId')}');
 
         setLoading = false;
+        return true;
       } else {
         var error = apiErrorFromJson(response.body);
         setLoading = false;
@@ -57,10 +71,21 @@ class LoginController extends GetxController {
           icon: const Icon(Ionicons.close_circle_outline, color: Colors.white),
           duration: const Duration(seconds: 2),
         );
+        return false;
       }
     } catch (e) {
       debugPrint('Error during login: $e');
       setLoading = false;
+      Get.snackbar(
+        'Connection Error',
+        'Unable to connect to server. Please check your internet connection and try again.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        icon: const Icon(Ionicons.close_circle_outline, color: Colors.white),
+        duration: const Duration(seconds: 3),
+      );
+      return false;
     }
   }
 
@@ -78,17 +103,28 @@ class LoginController extends GetxController {
     );
   }
 
+  void debugGetStorage() {
+    debugPrint('--- GetStorage Contents ---');
+    debugPrint('All keys: ${box.getKeys()}');
+    box.getKeys().forEach((key) {
+      var value = box.read(key);
+      if (key == 'token') {
+        debugPrint('$key: $value');
+      } else if (key.contains('userId') || key.contains('User')) {
+        debugPrint('$key: $value');
+      } else {
+        debugPrint(
+            '$key: ${value.toString().length > 100 ? '${value.toString().substring(0, 100)}...' : value}');
+      }
+    });
+    debugPrint('----------------------------');
+  }
+
   LoginResponse? getUserInfo() {
     String? userId = box.read('userId');
-    String? data;
-    if (userId != null) {
-      data = box.read(userId);
-    }
+    if (userId == null) return null;
 
-    if (data != null) {
-      return loginResponseFromJson(data);
-    } else {
-      return null;
-    }
+    String? data = box.read(userId);
+    return loginResponseFromJsonSafe(data);
   }
 }

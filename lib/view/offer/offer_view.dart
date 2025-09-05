@@ -78,9 +78,9 @@ class OfferView extends HookWidget {
                       child: ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: restaurents?.length ?? 0,
+                        itemCount: restaurents!.length,
                         itemBuilder: (context, index) {
-                          final restaurent = restaurents![index];
+                          final restaurent = restaurents[index];
                           return Padding(
                             padding: EdgeInsets.only(
                                 bottom: 16.h), // consistent spacing

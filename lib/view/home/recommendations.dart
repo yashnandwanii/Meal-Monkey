@@ -29,15 +29,36 @@ class Recommendations extends HookWidget {
         color: Colors.white,
         child: isLoading
             ? const FoodListShimmer()
-            : Padding(
-                padding: EdgeInsets.all(12.h),
-                child: ListView(
-                  children: List.generate(foods!.length, (i) {
-                    FoodItem food = foods[i];
-                    return FoodTile(food: food);
-                  }),
-                ),
-              ),
+            : foods == null || foods.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.restaurant_menu,
+                          size: 64.r,
+                          color: Tcolor.placeholder,
+                        ),
+                        SizedBox(height: 16.h),
+                        Text(
+                          'No recommendations available',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: Tcolor.placeholder,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Padding(
+                    padding: EdgeInsets.all(12.h),
+                    child: ListView(
+                      children: List.generate(foods.length, (i) {
+                        FoodItem food = foods[i];
+                        return FoodTile(food: food);
+                      }),
+                    ),
+                  ),
       ),
     );
   }

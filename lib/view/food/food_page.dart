@@ -9,7 +9,7 @@ import 'package:food_delivery_app/controllers/cart_controller.dart';
 import 'package:food_delivery_app/controllers/login_controller.dart';
 import 'package:food_delivery_app/models/cart_request.dart';
 import 'package:food_delivery_app/models/login_response.dart';
-import 'package:food_delivery_app/models/order_request.dart';
+import 'package:food_delivery_app/models/payment_request.dart';
 import 'package:food_delivery_app/models/restaurents.dart';
 import 'package:food_delivery_app/view/auth/login/login_view.dart';
 import 'package:food_delivery_app/view/orders/order_page.dart';
@@ -184,7 +184,7 @@ class _FoodPageState extends State<FoodPage> {
                     Obx(
                       () => ReusableText(
                         text:
-                            '\$${(widget.food.price + controller.totalAdditivesPrice) * controller.count.value}',
+                            '₹${(widget.food.price + controller.totalAdditivesPrice) * controller.count.value}',
                         style: appBarTextStyle(
                           18,
                           Tcolor.primary,
@@ -219,26 +219,19 @@ class _FoodPageState extends State<FoodPage> {
                       (index) {
                         final tag = widget.food.foodTags[index];
                         return Container(
-                          height: 20.h,
-                          width: 80.w,
-                          margin: EdgeInsets.only(right: 5.w),
+                          margin: EdgeInsets.only(right: 8.w),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 4.h),
                           decoration: BoxDecoration(
-                            color: Tcolor.primary.withValues(alpha: 0.3),
-                            borderRadius: BorderRadius.circular(15.r),
+                            color: Tcolor.primary.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(16.r),
+                            border: Border.all(
+                                color: Tcolor.primary.withValues(alpha: 0.3)),
                           ),
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 5.0, vertical: 5),
-                              child: ReusableText(
-                                text: tag,
-                                style: appBarTextStyle(
-                                  12,
-                                  Colors.black,
-                                  FontWeight.w400,
-                                ),
-                              ),
-                            ),
+                          child: ReusableText(
+                            text: tag,
+                            style: appBarTextStyle(
+                                12, Tcolor.primary, FontWeight.w500),
                           ),
                         );
                       },
@@ -283,7 +276,7 @@ class _FoodPageState extends State<FoodPage> {
                               ),
                               const Spacer(),
                               ReusableText(
-                                text: '\$${additive.price}',
+                                text: '₹${additive.price}',
                                 style: appBarTextStyle(
                                   12,
                                   Tcolor.primary,
@@ -394,12 +387,23 @@ class _FoodPageState extends State<FoodPage> {
                             Get.to(() => const LoginView());
                           } else if (user.verification == false) {
                             _showVerificationSheet(context);
+                          } else if (restaurent == null) {
+                            // Restaurant data not loaded yet
+                            Get.snackbar(
+                              'Please Wait',
+                              'Restaurant information is loading. Please try again in a moment.',
+                              snackPosition: SnackPosition.BOTTOM,
+                              backgroundColor: Colors.orange,
+                              colorText: Colors.white,
+                              duration: Duration(seconds: 2),
+                            );
                           } else {
                             double totalPrice = (widget.food.price +
                                     controller.totalAdditivesPrice) *
                                 controller.count.value;
-                            OrderItem orderItem = OrderItem(
+                            PaymentOrderItem orderItem = PaymentOrderItem(
                               foodId: widget.food.id,
+                              foodName: widget.food.title,
                               quantity: controller.count.value,
                               price: totalPrice,
                               additives: controller.getCartAdditives(),
@@ -409,9 +413,9 @@ class _FoodPageState extends State<FoodPage> {
                             // Create Order Item
                             Get.to(
                               () => OrderPage(
-                                item: orderItem,
-                                restaurant: restaurent!,
+                                restaurant: restaurent,
                                 food: widget.food,
+                                item: orderItem,
                               ),
                               transition: Transition.cupertino,
                               duration: const Duration(milliseconds: 900),

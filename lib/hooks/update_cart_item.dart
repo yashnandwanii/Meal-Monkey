@@ -13,10 +13,6 @@ dynamic useUpdateCartItem() {
 
   Future<void> decreaseQuantity(String itemId) async {
     String? accessToken = box.read('token');
-    if (accessToken == null) {
-      error.value = Exception('User is not authenticated');
-      return;
-    }
     Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $accessToken',
@@ -42,10 +38,6 @@ dynamic useUpdateCartItem() {
 
   Future<void> increaseQuantity(String itemId, String productId) async {
     String? accessToken = box.read('token');
-    if (accessToken == null) {
-      error.value = Exception('User is not authenticated');
-      return;
-    }
     Map<String, String> headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $accessToken',

@@ -45,7 +45,7 @@ class VerificationController extends GetxController {
       debugPrint('Verifying email: $email');
       debugPrint('Using verification code: $code');
 
-      if (email == null || tempData == null) {
+      if (tempData == null) {
         Get.snackbar(
           'Error',
           'Registration data not found. Please register again.',
@@ -61,19 +61,6 @@ class VerificationController extends GetxController {
 
       // Get stored token after registration
       String? token = box.read('token');
-      if (token == null) {
-        Get.snackbar(
-          'Error',
-          'Authentication token not found. Please register again.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          icon: const Icon(Ionicons.close_circle_outline, color: Colors.white),
-          duration: const Duration(seconds: 2),
-        );
-        setLoading = false;
-        return;
-      }
 
       Uri uri = Uri.parse('$appBaseUrl/api/users/verify/$code');
       Map<String, String> headers = {
@@ -98,23 +85,24 @@ class VerificationController extends GetxController {
           String userId = data.id;
           String userData = jsonEncode(data);
 
-          // Update storage with verified user data
+          debugPrint('Verification - New Token: ${data.token}');
+          debugPrint('Verification - User ID: $userId');
+          debugPrint('Verification - Email: ${data.email}');
+
+          // Clear old data and update with verified user data
+          box.erase();
+
           box.write(userId, userData);
           box.write('token', data.token);
           box.write('userId', userId);
           box.write('verification', true);
           box.write('isLoggedIn', true);
+          box.write('currentUserId', userId);
 
-          // Clean up temporary data
-          box.remove('tempUserData');
-          box.remove('email');
-
-          // Store verified user data
-          box.write(userId, userData);
-          box.write('token', data.token);
-          box.write('isLoggedIn', true);
-          box.write('userId', userId);
-          box.write('verification', true); // Mark as verified
+          // Debug: Verify what was stored
+          debugPrint('After verification - Stored token: ${box.read('token')}');
+          debugPrint(
+              'After verification - Stored userId: ${box.read('userId')}');
 
           setLoading = false;
 
@@ -192,25 +180,13 @@ class VerificationController extends GetxController {
       setLoading = true;
 
       String? email = box.read('email');
-      if (email == null) {
-        Get.snackbar(
-          'Error',
-          'Email not found. Please register again.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-          duration: const Duration(seconds: 2),
-        );
-        setLoading = false;
-        return;
-      }
 
       Uri uri = Uri.parse('$appBaseUrl/api/users/resend-verification');
       Map<String, String> headers = {
         'Content-Type': 'application/json',
       };
 
-      Map<String, String> payload = {'email': email};
+      Map<String, String> payload = {'email': email!};
       String jsonData = json.encode(payload);
 
       var response = await http.post(uri, headers: headers, body: jsonData);

@@ -16,20 +16,27 @@ FetchFoods useFetchAllFoods(String code) {
   Future<void> fetchData() async {
     isLoading.value = true;
     try {
-      Uri url = Uri.parse('$appBaseUrl/api/food/bycode/$code');
+      Uri url = Uri.parse('$appBaseUrl/api/food/code/$code');
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        //foods.value = foodsModelFromJson(response.body);
         foods.value = foodItemFromJson(response.body);
+      } else if (response.statusCode == 404) {
+        debugPrint('No foods found for code: $code');
+        foods.value = [];
       } else if (response.statusCode == 400) {
         apiError.value = ApiError.fromJson(json.decode(response.body));
         error.value = null;
+        foods.value = [];
       } else {
         debugPrint('Error: ${response.statusCode}');
+        error.value = Exception('Failed to load foods: ${response.statusCode}');
+        foods.value = [];
       }
     } catch (e) {
-      error.value = e as Exception;
+      debugPrint('Exception in fetchAllFoods: $e');
+      error.value = Exception('Failed to fetch foods: $e');
+      foods.value = [];
     } finally {
       isLoading.value = false;
     }

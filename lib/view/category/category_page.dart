@@ -17,7 +17,7 @@ class CategoryPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(CategoryController());
-    final hookResults = useFetchCategoryFoods('41007428');
+    final hookResults = useFetchCategoryFoods();
     List<FoodItem>? foods = hookResults.data;
     final isLoading = hookResults.isLoading;
 
@@ -53,7 +53,7 @@ class CategoryPage extends HookWidget {
           height: MediaQuery.of(context).size.height,
           child: isLoading
               ? const FoodListShimmer()
-              : foods == null || foods.isEmpty
+              : foods!.isEmpty
                   ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

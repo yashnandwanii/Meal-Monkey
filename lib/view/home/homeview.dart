@@ -22,10 +22,32 @@ class Homeview extends StatefulWidget {
   State<Homeview> createState() => _HomeviewState();
 }
 
-class _HomeviewState extends State<Homeview> {
+class _HomeviewState extends State<Homeview>
+    with AutomaticKeepAliveClientMixin {
   final GetStorage box = GetStorage();
-
   final TextEditingController txtController = TextEditingController();
+  late CategoryController controller;
+  bool _isInitialized = false;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeController();
+  }
+
+  void _initializeController() {
+    if (!_isInitialized) {
+      controller = Get.put(CategoryController());
+      _isInitialized = true;
+      print('HomeView: Controller initialized and data loaded');
+    } else {
+      controller = Get.find<CategoryController>();
+      print('HomeView: Using existing controller - data preserved');
+    }
+  }
 
   @override
   void dispose() {
@@ -35,7 +57,8 @@ class _HomeviewState extends State<Homeview> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(CategoryController());
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
+
     return Scaffold(
       backgroundColor: offWhite,
       appBar: PreferredSize(

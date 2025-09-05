@@ -18,6 +18,7 @@ class AddressPage extends HookWidget {
     final List<AddressResponse>? addresses = hookResults.data ?? [];
     final bool isLoading = hookResults.isLoading;
     final refetch = hookResults.refetch;
+    print('Addresses: $addresses');
 
     return Scaffold(
       appBar: AppBar(

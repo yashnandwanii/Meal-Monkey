@@ -20,9 +20,12 @@ class CategoryWidget extends StatelessWidget {
     final controller = Get.put(CategoryController());
     return GestureDetector(
       onTap: () {
-        if (controller.categoryValue != category.id) {
-          controller.updateCategory = category.id;
+        debugPrint(
+            'Category tapped: ${category.title} (id: ${category.id}, value: ${category.value})');
+        if (controller.categoryValue != category.value) {
+          controller.updateCategory = category.value;
           controller.updateTitle = category.title;
+          debugPrint('Category updated to: ${category.value}');
         } else if (category.value == 'more') {
           Get.to(
             () => const AllCategories(),
@@ -32,6 +35,7 @@ class CategoryWidget extends StatelessWidget {
         } else {
           controller.updateCategory = '';
           controller.updateTitle = '';
+          debugPrint('Category cleared');
         }
       },
       child: Obx(
@@ -42,7 +46,7 @@ class CategoryWidget extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10.r),
             border: Border.all(
-              color: controller.categoryValue == category.id
+              color: controller.categoryValue == category.value
                   ? Colors.orange
                   : const Color(0xFFBDBDBD),
               width: 1.w,

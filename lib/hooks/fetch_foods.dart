@@ -17,29 +17,36 @@ FetchFoods useFetchFoods(String code) {
     isLoading.value = true;
     try {
       Uri url = Uri.parse('$appBaseUrl/api/food/recommendation/$code');
+      // debugPrint('Fetching foods from: $url');
+
       final response = await http.get(url);
+      // debugPrint('Response status: ${response.statusCode}');
+      // debugPrint('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
-        //foods.value = foodsModelFromJson(response.body);
         foods.value = foodItemFromJson(response.body);
+        //debugPrint('Successfully loaded ${foods.value?.length} foods');
+      } else if (response.statusCode == 404) {
+        debugPrint('No foods found for code: $code');
+        foods.value = [];
       } else if (response.statusCode == 400) {
         apiError.value = ApiError.fromJson(json.decode(response.body));
         error.value = null;
+        debugPrint('API Error: ${apiError.value?.message}');
       } else {
         debugPrint('Error: ${response.statusCode}');
+        error.value = Exception('Failed to load foods: ${response.statusCode}');
       }
     } catch (e) {
-      //print('Exception: $e');
-      error.value = e as Exception;
+      debugPrint('Exception in fetchFoods: $e');
+      error.value = Exception('Failed to fetch foods: $e');
+      foods.value = [];
     } finally {
       isLoading.value = false;
     }
   }
 
   useEffect(() {
-    Future.delayed(
-      const Duration(seconds: 3),
-    );
     fetchData();
     return null;
   }, []);

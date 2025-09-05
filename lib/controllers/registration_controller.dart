@@ -15,7 +15,7 @@ class RegistrationController extends GetxController {
   bool get isLoading => _isLoading.value;
   set setLoading(bool value) => _isLoading.value = value;
 
-  Future<void> registrationFunction(String data) async {
+  Future<bool> registrationFunction(String data) async {
     setLoading = true;
 
     Uri uri = Uri.parse('$appBaseUrl/register');
@@ -36,12 +36,12 @@ class RegistrationController extends GetxController {
         Map<String, dynamic> registrationData = json.decode(data);
         String email = registrationData['email'];
 
-        // Clear any old data
-        box.remove('verification');
-        box.remove('email');
-        box.remove('tempUserData');
-        box.remove('token');
-        box.remove('userId');
+        // Clear ALL existing data to prevent token conflicts
+        box.erase();
+
+        debugPrint('New registration - Token: ${successResponse.token}');
+        debugPrint('New registration - User ID: ${successResponse.id}');
+        debugPrint('New registration - Email: $email');
 
         // Store new registration data
         box.write('verification', false); // Initial verification status
@@ -51,15 +51,15 @@ class RegistrationController extends GetxController {
         box.write('userId', successResponse.id); // Store the user ID
 
         // Debug GetStorage contents
-        debugPrint('--- GetStorage Contents ---');
+        debugPrint('--- GetStorage Contents After Registration ---');
         debugPrint('Email: $email');
         debugPrint('Verification Status: ${box.read('verification')}');
-        box.getKeys().forEach((key) {
-          debugPrint('$key: ${box.read(key)}');
-        });
-        debugPrint('------------------------');
+        debugPrint('Token: ${box.read('token')}');
+        debugPrint('UserId: ${box.read('userId')}');
+        debugPrint('------------------------------------------------');
 
         setLoading = false;
+        return true;
       } else {
         try {
           debugPrint('Error response body: ${response.body}');
@@ -76,6 +76,7 @@ class RegistrationController extends GetxController {
             duration: const Duration(seconds: 3),
           );
           debugPrint('Error: ${error.message}');
+          return false;
         } catch (parseError) {
           debugPrint('Error parsing error response: $parseError');
           setLoading = false;
@@ -89,20 +90,22 @@ class RegistrationController extends GetxController {
                 const Icon(Ionicons.close_circle_outline, color: Colors.white),
             duration: const Duration(seconds: 3),
           );
+          return false;
         }
       }
     } catch (e) {
       debugPrint('Error during registration: $e');
       setLoading = false;
       Get.snackbar(
-        'Error',
-        'An error occurred during registration. Please try again.',
+        'Connection Error',
+        'Unable to connect to server. Please check your internet connection and try again.',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,
         icon: const Icon(Ionicons.close_circle_outline, color: Colors.white),
         duration: const Duration(seconds: 3),
       );
+      return false;
     }
   }
 }

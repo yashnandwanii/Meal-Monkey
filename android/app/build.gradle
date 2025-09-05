@@ -3,12 +3,15 @@ plugins {
     // START: FlutterFire Configuration
     id 'com.google.gms.google-services'
     // END: FlutterFire Configuration
-
-
-
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
+}
+
+def keyProps = new Properties()
+def keyPropsFile = rootProject.file('key.properties')
+if (keyPropsFile.exists()) {
+    keyProps.load(new FileInputStream(keyPropsFile))
 }
 
 android {
@@ -28,11 +31,12 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.food_delivery_app"
-        mutliDexEnabled true
-        minSdk = 21
+        multiDexEnabled true
+        minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders = [ GOOGLE_API_KEY: keyProps['google_maps_api_key'] ?: "" ]
     }
 
     buildTypes {

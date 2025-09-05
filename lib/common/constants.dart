@@ -1,7 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:io';
 
-const String appBaseUrl = 'http://localhost:6013';
-String googleApiKey = 'AIzaSyD_IyXT12elpZ2KvqojoAyQjAyeHiTpuVY';
+// Platform-aware base URL for development
+String get _developmentBaseUrl {
+  if (Platform.isAndroid) {
+    // Android emulator uses 10.0.2.2 to access host machine
+    return 'http://10.0.2.2:6013';
+  } else {
+    // iOS simulator and other platforms can use localhost
+    return 'http://localhost:6013';
+  }
+}
+
+final String appBaseUrl = dotenv.env['APP_BASE_URL'] ?? _developmentBaseUrl;
+final String googleApiKey =
+    dotenv.env['GOOGLE_API_KEY'] ?? 'AIzaSyD_IyXT12elpZ2KvqojoAyQjAyeHiTpuVY';
 const Color offWhite = Color(0xFFFAF9F6);
 
 final List<String> verificationReasons = [

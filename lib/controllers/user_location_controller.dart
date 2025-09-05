@@ -22,7 +22,7 @@ class UserLocationController extends GetxController {
 
   LatLng position = const LatLng(0, 0);
   void setPosition(LatLng value) {
-    value = position;
+    position = value;
     update();
   }
 
@@ -37,7 +37,7 @@ class UserLocationController extends GetxController {
   String get postalCode => _postalCode.value;
 
   set setPostalCode(String value) {
-    _address.value = value;
+    _postalCode.value = value;
   }
 
   Future<void> addAddress(String addressData) async {

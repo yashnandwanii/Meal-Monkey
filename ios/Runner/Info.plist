@@ -67,6 +67,7 @@
 			<array>
 				<string>$(REVERSED_CLIENT_ID)</string>
 				<string>app-1-273316376823-ios-741db1b6b1a17cb315e3f2</string>
+				<string>rzp_test_1AovirvDbdoNlo</string>
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>

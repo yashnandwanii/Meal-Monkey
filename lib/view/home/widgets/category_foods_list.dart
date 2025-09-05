@@ -11,7 +11,7 @@ class CategoryFoodsList extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hookResults = useFetchCategoryFoods('41007428');
+    final hookResults = useFetchCategoryFoods();
     List<FoodItem>? foods = hookResults.data;
     final isLoading = hookResults.isLoading;
     return SizedBox(

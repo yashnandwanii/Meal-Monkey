@@ -24,7 +24,9 @@ class _CustomAppbarState extends State<CustomAppbar> {
   LoginResponse? user;
   final UserLocationController _userLocationController =
       Get.put(UserLocationController());
+
   String _currentLocation = '';
+
   String getTimeOfDay() {
     DateTime now = DateTime.now();
     int hour = now.hour;
@@ -42,11 +44,20 @@ class _CustomAppbarState extends State<CustomAppbar> {
   void initState() {
     super.initState();
     final box = GetStorage();
-    final jsonUser = box.read('tempUser');
+    final jsonUser = box.read('tempUserData');
 
-    if (jsonUser != null) {
-      user = LoginResponse.fromJson(jsonUser);
+    // Check if user data exists before trying to parse it
+    user = loginResponseFromJsonSafe(jsonUser);
+
+    // If no temp user data, try to get user data from the userId-based storage
+    if (user == null) {
+      final userId = box.read('userId');
+      if (userId != null) {
+        final userData = box.read(userId);
+        user = loginResponseFromJsonSafe(userData);
+      }
     }
+
     _determinePosition();
   }
 
@@ -90,10 +101,8 @@ class _CustomAppbarState extends State<CustomAppbar> {
           _currentLocation = controller.address;
         });
       }
-      debugPrint('Current location: $_currentLocation');
-    } catch (e) {
-      debugPrint("Error getting location: $e");
-    }
+      // debugPrint('Current location: $_currentLocation');
+    } catch (e) {}
   }
 
   @override
@@ -141,7 +150,9 @@ class _CustomAppbarState extends State<CustomAppbar> {
                         return ReusableText(
                           text: address.isEmpty
                               ? "Fetching location..."
-                              : address,
+                              : address.length > 20
+                                  ? "${address.substring(0, 20)}..."
+                                  : address,
                           style: appBarTextStyle(
                             13,
                             Colors.grey,

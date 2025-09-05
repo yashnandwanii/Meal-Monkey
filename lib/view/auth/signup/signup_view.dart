@@ -125,38 +125,41 @@ class _SignupViewState extends State<SignupView> {
                           password: passwordController.text.trim(),
                         );
                         String data = registrationModelToJson(model);
-                        await controller.registrationFunction(data);
+                        bool registrationSuccess = await controller.registrationFunction(data);
                         
-                        // Check verification status after registration
-                        bool? verificationStatus = controller.box.read('verification');
-                        debugPrint('Verification code needed: ${verificationStatus == false}');
-                        
-                        if (verificationStatus == false) {
-                          Get.snackbar(
-                            'Verification Required',
-                            'Please check your email for verification code',
-                            snackPosition: SnackPosition.BOTTOM,
-                            backgroundColor: Tcolor.primary,
-                            colorText: Colors.white,
-                            icon: const Icon(Icons.warning, color: Colors.white54),
-                            duration: const Duration(seconds: 3),
-                          );
-                          Get.to(() => const VerificationPage());
-                        } else {
-                          Get.snackbar(
-                            'Registration Successful',
-                            'Welcome to our app!',
-                            snackPosition: SnackPosition.TOP,
-                            backgroundColor: Tcolor.primary,
-                            colorText: Colors.white,
-                            icon: const Icon(Icons.check_circle_outline,
-                                color: Colors.white54),
-                            duration: const Duration(seconds: 2),
-                          );
-                          Get.offAll(
-                            () => const OnBoardingView(),
-                            transition: Transition.rightToLeft,
-                          );
+                        // Check if registration was successful
+                        if (registrationSuccess) {
+                          // Check verification status after registration
+                          bool? verificationStatus = controller.box.read('verification');
+                          debugPrint('Verification code needed: ${verificationStatus == false}');
+                          
+                          if (verificationStatus == false) {
+                            Get.snackbar(
+                              'Verification Required',
+                              'Please check your email for verification code',
+                              snackPosition: SnackPosition.BOTTOM,
+                              backgroundColor: Tcolor.primary,
+                              colorText: Colors.white,
+                              icon: const Icon(Icons.warning, color: Colors.white54),
+                              duration: const Duration(seconds: 3),
+                            );
+                            Get.to(() => const VerificationPage());
+                          } else {
+                            Get.snackbar(
+                              'Registration Successful',
+                              'Welcome to our app!',
+                              snackPosition: SnackPosition.TOP,
+                              backgroundColor: Tcolor.primary,
+                              colorText: Colors.white,
+                              icon: const Icon(Icons.check_circle_outline,
+                                  color: Colors.white54),
+                              duration: const Duration(seconds: 2),
+                            );
+                            Get.offAll(
+                              () => const OnBoardingView(),
+                              transition: Transition.rightToLeft,
+                            );
+                          }
                         }
                       } catch (e) {
                         debugPrint('Error during signup: $e');

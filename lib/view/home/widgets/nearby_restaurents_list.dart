@@ -19,32 +19,46 @@ class NearbyRestaurents extends HookWidget {
 
     return isLoading
         ? const NearbyShimmer()
-        : Container(
-            height: 190.h,
-            padding: EdgeInsets.only(left: 12.w, top: 10.h),
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: List.generate(
-                restaurents!.length,
-                (i) {
-                  RestaurentsModel restaurent = restaurents[i];
-                  return RestaurentWidget(
-                    onTap: () {
-                      Get.to(
-                        () => RestaurentPage(restaurent: restaurent),
-                        transition: Transition.rightToLeft,
-                        duration: const Duration(milliseconds: 500),
+        : restaurents == null || restaurents.isEmpty
+            ? Container(
+                height: 190.h,
+                padding: EdgeInsets.only(left: 12.w, top: 10.h),
+                child: Center(
+                  child: Text(
+                    'No restaurants available',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              )
+            : Container(
+                height: 190.h,
+                padding: EdgeInsets.only(left: 12.w, top: 10.h),
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: List.generate(
+                    restaurents.length,
+                    (i) {
+                      RestaurentsModel restaurent = restaurents[i];
+                      return RestaurentWidget(
+                        onTap: () {
+                          Get.to(
+                            () => RestaurentPage(restaurent: restaurent),
+                            transition: Transition.rightToLeft,
+                            duration: const Duration(milliseconds: 500),
+                          );
+                        },
+                        image: restaurent.imageUrl,
+                        logo: restaurent.logoUrl,
+                        title: restaurent.title,
+                        time: restaurent.time,
+                        rating: restaurent.ratingCount,
                       );
                     },
-                    image: restaurent.imageUrl,
-                    logo: restaurent.logoUrl,
-                    title: restaurent.title,
-                    time: restaurent.time,
-                    rating: restaurent.ratingCount,
-                  );
-                },
-              ),
-            ),
-          );
+                  ),
+                ),
+              );
   }
 }

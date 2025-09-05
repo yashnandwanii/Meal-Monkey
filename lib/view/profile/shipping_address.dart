@@ -423,6 +423,7 @@ class _ShippingAddressPageState extends State<ShippingAddressPage> {
                         // Convert model to JSON and send to backend
                         locationController
                             .addAddress(addressModelToJson(model));
+                        debugPrint('Address added: ${model.toJson()}');
                       }
                     },
                     height: 45,

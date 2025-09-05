@@ -14,8 +14,9 @@ class FoodList extends HookWidget {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    final hookResults = useFetchFoods('41007428');
+    final hookResults = useFetchFoods('41007420');
     List<FoodItem>? foods = hookResults.data;
+    print('Foods: $foods');
     final isLoading = hookResults.isLoading;
 
     return Container(
@@ -41,29 +42,42 @@ class FoodList extends HookWidget {
                 },
               ),
             )
-          : ListView(
-              scrollDirection: Axis.horizontal,
-              children: List.generate(
-                foods!.length,
-                (i) {
-                  var food = foods[i];
-                  //print(food);
-                  return FoodWidget(
-                    image: food.imageUrl[0],
-                    time: food.time,
-                    price: food.price.toString(),
-                    title: food.title,
-                    ontap: () {
-                      Get.to(
-                        () => FoodPage(food: food),
-                        transition: Transition.rightToLeft,
-                        duration: const Duration(milliseconds: 500),
+          : foods == null || foods.isEmpty
+              ? Container(
+                  height: 184.h,
+                  child: Center(
+                    child: Text(
+                      'No foods available',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                )
+              : ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: List.generate(
+                    foods.length,
+                    (i) {
+                      var food = foods[i];
+                      //print(food);
+                      return FoodWidget(
+                        image: food.imageUrl[0],
+                        time: food.time,
+                        price: food.price.toString(),
+                        title: food.title,
+                        ontap: () {
+                          Get.to(
+                            () => FoodPage(food: food),
+                            transition: Transition.rightToLeft,
+                            duration: const Duration(milliseconds: 500),
+                          );
+                        },
                       );
                     },
-                  );
-                },
-              ),
-            ),
+                  ),
+                ),
     );
   }
 }

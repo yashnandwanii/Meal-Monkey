@@ -22,11 +22,14 @@ class CartResponse {
   });
 
   factory CartResponse.fromJson(Map<String, dynamic> json) => CartResponse(
-        id: json["_id"],
-        productId: ProductId.fromJson(json["productId"]),
-        additives: List<String>.from(json["additives"].map((x) => x)),
-        totalPrice: json["totalPrice"],
-        quantity: json["quantity"],
+        id: json["_id"] ?? "",
+        productId: ProductId.fromJson(json["productId"] ?? {}),
+        additives: json["additives"] != null
+            ? List<String>.from(
+                json["additives"].map((x) => x?.toString() ?? ""))
+            : [],
+        totalPrice: (json["totalPrice"] as num?)?.toDouble() ?? 0.0,
+        quantity: json["quantity"] ?? 0,
       );
 
   Map<String, dynamic> toJson() => {
@@ -56,12 +59,15 @@ class ProductId {
   });
 
   factory ProductId.fromJson(Map<String, dynamic> json) => ProductId(
-        id: json["_id"],
-        title: json["title"],
-        imageUrl: List<String>.from(json["imageUrl"].map((x) => x)),
-        restaurent: Restaurent.fromJson(json["restaurent"]),
-        rating: json["rating"]?.toDouble(),
-        ratingCount: json["ratingCount"],
+        id: json["_id"] ?? "",
+        title: json["title"] ?? "",
+        imageUrl: json["imageUrl"] != null
+            ? List<String>.from(
+                json["imageUrl"].map((x) => x?.toString() ?? ""))
+            : [],
+        restaurent: Restaurent.fromJson(json["restaurent"] ?? {}),
+        rating: (json["rating"] as num?)?.toDouble() ?? 0.0,
+        ratingCount: json["ratingCount"] ?? 0,
       );
 
   Map<String, dynamic> toJson() => {
@@ -86,9 +92,9 @@ class Restaurent {
   });
 
   factory Restaurent.fromJson(Map<String, dynamic> json) => Restaurent(
-        coords: Coords.fromJson(json["coords"]),
-        id: json["_id"],
-        time: json["time"],
+        coords: Coords.fromJson(json["coords"] ?? {}),
+        id: json["_id"] ?? "",
+        time: json["time"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -118,13 +124,13 @@ class Coords {
   });
 
   factory Coords.fromJson(Map<String, dynamic> json) => Coords(
-        id: json["id"],
-        latitude: json["latitude"]?.toDouble(),
-        longitude: json["longitude"]?.toDouble(),
-        address: json["address"],
-        title: json["title"],
-        latitudeDelta: json["latitudeDelta"]?.toDouble(),
-        longitudeDelta: json["longitudeDelta"]?.toDouble(),
+        id: json["id"] ?? "",
+        latitude: (json["latitude"] as num?)?.toDouble() ?? 0.0,
+        longitude: (json["longitude"] as num?)?.toDouble() ?? 0.0,
+        address: json["address"] ?? "",
+        title: json["title"] ?? "",
+        latitudeDelta: (json["latitudeDelta"] as num?)?.toDouble() ?? 0.0,
+        longitudeDelta: (json["longitudeDelta"] as num?)?.toDouble() ?? 0.0,
       );
 
   Map<String, dynamic> toJson() => {
