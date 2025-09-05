@@ -18,14 +18,43 @@ import 'package:food_delivery_app/view/profile/widget/user_info_widget.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    LoginResponse? user;
-    final controller = Get.put(LoginController());
+  State<ProfilePage> createState() => _ProfilePageState();
+}
 
+class _ProfilePageState extends State<ProfilePage>
+    with AutomaticKeepAliveClientMixin {
+  late LoginController controller;
+  bool _isInitialized = false;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeController();
+  }
+
+  void _initializeController() {
+    if (!_isInitialized) {
+      controller = Get.put(LoginController());
+      _isInitialized = true;
+      print('ProfilePage: Controller initialized and data loaded');
+    } else {
+      controller = Get.find<LoginController>();
+      print('ProfilePage: Using existing controller - data preserved');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
+
+    LoginResponse? user;
     final box = GetStorage();
     String? token = box.read('token');
 

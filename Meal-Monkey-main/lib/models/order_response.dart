@@ -64,9 +64,9 @@ class PaymentVerificationRequest {
   Map<String, dynamic> toJson() {
     return {
       'orderId': orderId,
-      'razorpayOrderId': razorpayOrderId,
-      'razorpayPaymentId': razorpayPaymentId,
-      'razorpaySignature': razorpaySignature,
+      'razorpay_order_id': razorpayOrderId,
+      'razorpay_payment_id': razorpayPaymentId,
+      'razorpay_signature': razorpaySignature,
     };
   }
 }
@@ -107,7 +107,7 @@ class PaymentVerificationResponse {
 
   factory PaymentVerificationResponse.fromJson(Map<String, dynamic> json) {
     return PaymentVerificationResponse(
-      success: json['status'] ?? false,
+      success: json['success'] ?? false,
       message: json['message'] ?? '',
       data:
           json['data'] != null ? VerificationData.fromJson(json['data']) : null,

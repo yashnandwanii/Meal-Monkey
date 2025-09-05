@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:food_delivery_app/common/constants.dart';
 import 'package:food_delivery_app/models/order_request.dart';
 import 'package:food_delivery_app/models/order_response.dart';
+import 'package:food_delivery_app/services/auth_service.dart';
 
 class PaymentService {
   // Create order and get Razorpay order details
@@ -83,8 +84,9 @@ class PaymentService {
         throw Exception(errorData['message'] ?? 'Payment verification failed');
       }
     } catch (e) {
-      print('Exception in verifyPayment: $e');
-      throw Exception('Payment verification failed: $e');
+      print('=== ERROR IN PAYMENT VERIFICATION ===');
+      print('Error: $e');
+      rethrow; // Re-throw the original exception
     }
   }
 
@@ -131,25 +133,11 @@ class PaymentService {
 
   // Get user data for orders
   static Map<String, dynamic>? getUserData() {
-    try {
-      final tempUserData = GetStorage().read('tempUserData');
-      if (tempUserData != null) {
-        if (tempUserData is Map<String, dynamic>) {
-          return tempUserData;
-        } else if (tempUserData is String) {
-          return json.decode(tempUserData) as Map<String, dynamic>;
-        }
-      }
-      return null;
-    } catch (e) {
-      print('Error reading user data: $e');
-      return null;
-    }
+    return AuthService.getCurrentUserData();
   }
 
   // Get user ID
   static String? getUserId() {
-    final userData = getUserData();
-    return userData?['_id'];
+    return AuthService.getCurrentUserId();
   }
 }

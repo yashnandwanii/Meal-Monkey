@@ -15,6 +15,7 @@ import 'package:food_delivery_app/models/order_request.dart';
 import 'package:food_delivery_app/models/order_response.dart';
 import 'package:food_delivery_app/models/payment_request.dart';
 import 'package:food_delivery_app/services/payment_service.dart';
+import 'package:food_delivery_app/services/location_service.dart';
 import 'package:food_delivery_app/view/restaurent/Widgets/row_text.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:get/get.dart';
@@ -51,6 +52,7 @@ class OrderPage extends HookWidget {
     final isProcessingPayment = useState<bool>(false);
     final selectedAddress = useState<AddressResponse?>(null);
     final currentOrderId = useState<String?>(null);
+    final deliveryInfo = useState<DeliveryInfo?>(null);
 
     void handlePaymentSuccess(PaymentSuccessResponse response) async {
       isProcessingPayment.value = false;
@@ -138,13 +140,12 @@ class OrderPage extends HookWidget {
           debugPrint(
               "Payment Status: ${verificationResponse.data!.paymentStatus}");
 
-          // Create comprehensive order details for success page
+          // Create comprehensive order details for tracking page
           final orderDetails = {
             'orderId': verificationResponse.data!.orderId,
             'paymentId': verificationResponse.data!.paymentId,
             'orderDate': verificationResponse.data!.orderDate,
-            'estimatedDeliveryTime':
-                verificationResponse.data!.estimatedDeliveryTime,
+            'estimatedDeliveryTime': deliveryInfo.value?.estimatedTime ?? 30,
             'orderStatus': verificationResponse.data!.orderStatus,
             'paymentStatus': verificationResponse.data!.paymentStatus,
             'restaurant': {
@@ -162,10 +163,12 @@ class OrderPage extends HookWidget {
             'orderDetails': {
               'quantity': item.quantity,
               'subtotal': item.price * item.quantity,
-              'deliveryFee': 5.0,
-              'totalAmount': (item.price * item.quantity) + 5.0,
+              'deliveryFee': deliveryInfo.value?.charge ?? 20.0,
+              'totalAmount': (item.price * item.quantity) +
+                  (deliveryInfo.value?.charge ?? 20.0),
               'additives': item.additives,
               'instructions': item.instructions,
+              'distance': deliveryInfo.value?.distance ?? 0.0,
             },
             'address': {
               'line1': selectedAddress.value!.addressLine1,
@@ -177,15 +180,14 @@ class OrderPage extends HookWidget {
 
           // Show success toast
           Fluttertoast.showToast(
-            msg:
-                "Order placed successfully! Order ID: ${verificationResponse.data!.orderId.substring(0, 8)}...",
+            msg: "Order placed successfully! Track your order now.",
             backgroundColor: Colors.green,
             textColor: Colors.white,
             toastLength: Toast.LENGTH_LONG,
           );
 
-          // Navigate to success page with comprehensive order details
-          Get.offAllNamed('/order-success', arguments: orderDetails);
+          // Navigate to order tracking page with comprehensive order details
+          Get.offAllNamed('/order-tracking', arguments: orderDetails);
         } else {
           throw Exception(verificationResponse.message);
         }
@@ -360,6 +362,32 @@ class OrderPage extends HookWidget {
       return null;
     }, [addresses]);
 
+    // Calculate delivery info when address changes
+    useEffect(() {
+      if (selectedAddress.value != null) {
+        deliveryInfo.value = DeliveryInfo.calculate(
+          userLat: selectedAddress.value!.latitude,
+          userLon: selectedAddress.value!.longitude,
+          restaurantLat: restaurant.coords.latitude,
+          restaurantLon: restaurant.coords.longitude,
+        );
+        if (deliveryInfo.value!.distance > 10.0) {
+          Fluttertoast.showToast(
+            msg:
+                "Delivery distance exceeds 10km, additional charges may apply.",
+            backgroundColor: Colors.orange,
+            textColor: Colors.white,
+            toastLength: Toast.LENGTH_LONG,
+          );
+        }
+        debugPrint(
+            'Delivery Info: Distance=${deliveryInfo.value?.distance.toStringAsFixed(2)}km, '
+            'Charge=₹${deliveryInfo.value?.charge.toStringAsFixed(2)}, '
+            'Time=${deliveryInfo.value?.estimatedTime}mins');
+      }
+      return null;
+    }, [selectedAddress.value]);
+
     void openCheckout() async {
       // Validate address selection
       if (selectedAddress.value == null) {
@@ -412,7 +440,8 @@ class OrderPage extends HookWidget {
       debugPrint("Address: ${selectedAddress.value!.addressLine1}");
 
       try {
-        // Create order request with detailed validation
+        // Create order request with detailed validation and dynamic delivery charges
+        final double dynamicDeliveryFee = deliveryInfo.value?.charge ?? 20.0;
         final orderRequest = OrderRequest(
           userId: userId,
           restaurantId: restaurant.id,
@@ -430,8 +459,8 @@ class OrderPage extends HookWidget {
             )
           ],
           orderTotal: item.price * item.quantity,
-          deliveryFee: 5.0,
-          grandTotal: (item.price * item.quantity) + 5.0,
+          deliveryFee: dynamicDeliveryFee,
+          grandTotal: (item.price * item.quantity) + dynamicDeliveryFee,
           deliveryAddressId: selectedAddress.value!.id,
           deliveryAddress:
               '${selectedAddress.value!.addressLine1}, ${selectedAddress.value!.postalCode}',
@@ -622,12 +651,12 @@ class OrderPage extends HookWidget {
                     SizedBox(height: 10.h),
                     _buildOrderSummary(),
                     SizedBox(height: 15.h),
-                    _buildRestaurantInfo(),
+                    _buildRestaurantInfo(deliveryInfo.value),
                     SizedBox(height: 20.h),
                     _buildDeliveryAddress(addresses, selectedAddress),
                     SizedBox(height: 20.h),
-                    _buildPaymentButton(
-                        openCheckout, isProcessingPayment.value),
+                    _buildPaymentButton(openCheckout, isProcessingPayment.value,
+                        deliveryInfo.value),
                   ],
                 ),
               ),
@@ -742,7 +771,7 @@ class OrderPage extends HookWidget {
     );
   }
 
-  Widget _buildRestaurantInfo() {
+  Widget _buildRestaurantInfo(DeliveryInfo? deliveryInfo) {
     return Container(
       width: width,
       padding: EdgeInsets.all(16.w),
@@ -769,9 +798,28 @@ class OrderPage extends HookWidget {
           SizedBox(height: 10.h),
           RowText(first: "Business Hours", second: restaurant.businessHours),
           SizedBox(height: 8.h),
-          const RowText(first: "Distance from you", second: "3km"),
+          RowText(
+              first: "Distance from you",
+              second: deliveryInfo != null
+                  ? "${deliveryInfo.distance.toStringAsFixed(1)}km"
+                  : "Calculating..."),
           SizedBox(height: 8.h),
-          RowText(first: "Delivery Fee", second: "₹5.00"),
+          RowText(
+              first: "Delivery Fee",
+              second: deliveryInfo != null
+                  ? "₹${deliveryInfo.charge.toStringAsFixed(2)}"
+                  : "₹20.00"),
+          if (deliveryInfo != null && deliveryInfo.distance > 2.0) ...[
+            SizedBox(height: 4.h),
+            Text(
+              deliveryInfo.breakdown['description'],
+              style: TextStyle(
+                fontSize: 10.sp,
+                color: Colors.grey[600],
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
           SizedBox(height: 8.h),
           Divider(color: Colors.grey[300]),
           SizedBox(height: 8.h),
@@ -783,7 +831,9 @@ class OrderPage extends HookWidget {
                 style: appBarTextStyle(16, Colors.black87, FontWeight.bold),
               ),
               ReusableText(
-                text: "₹ ${(item.price + 5.0).toStringAsFixed(2)}",
+                text: deliveryInfo != null
+                    ? "₹${(item.price * item.quantity + deliveryInfo.charge).toStringAsFixed(2)}"
+                    : "₹${(item.price * item.quantity + 20.0).toStringAsFixed(2)}",
                 style: appBarTextStyle(18, Tcolor.primary, FontWeight.bold),
               ),
             ],
@@ -799,7 +849,7 @@ class OrderPage extends HookWidget {
       width: width,
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: offWhite,
+        color: Colors.white, // Changed from offWhite to white
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Column(
@@ -811,28 +861,66 @@ class OrderPage extends HookWidget {
           ),
           SizedBox(height: 10.h),
           if (addresses != null && addresses.isNotEmpty)
-            DropdownButtonFormField<AddressResponse>(
-              value: selectedAddress.value,
-              isExpanded: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                labelText: 'Select Address',
-                labelStyle: TextStyle(color: Colors.grey[600]),
-              ),
-              items: addresses.map((address) {
-                return DropdownMenuItem<AddressResponse>(
-                  value: address,
-                  child: Text(
-                    "${address.addressLine1}, ${address.postalCode}",
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
+            StatefulBuilder(
+              builder: (context, setState) {
+                return DropdownButtonFormField<AddressResponse>(
+                  key: ValueKey(selectedAddress.value?.id ?? 'no-address'),
+                  value: selectedAddress.value,
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    fillColor: Colors.white,
+                    filled: true,
+                    labelText: 'Select Address',
+                    labelStyle: TextStyle(color: Colors.grey[600]),
                   ),
+                  items: addresses.map((address) {
+                    return DropdownMenuItem<AddressResponse>(
+                      value: address,
+                      child: Text(
+                        "${address.addressLine1}, ${address.postalCode}",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (val) {
+                    if (val != null && val != selectedAddress.value) {
+                      // Calculate distance for the new address
+                      final tempDeliveryInfo = DeliveryInfo.calculate(
+                        userLat: val.latitude,
+                        userLon: val.longitude,
+                        restaurantLat: restaurant.coords.latitude,
+                        restaurantLon: restaurant.coords.longitude,
+                      );
+
+                      // Check if the new address is more than 10km away
+                      if (tempDeliveryInfo.distance > 10.0) {
+                        // Show error message and force dropdown to rebuild with previous value
+                        Fluttertoast.showToast(
+                          msg:
+                              "This address is more than 10km away. Please select a closer address.",
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          toastLength: Toast.LENGTH_LONG,
+                        );
+
+                        // Force rebuild to show the previous address
+                        setState(() {
+                          // This will trigger a rebuild of the dropdown with the current selectedAddress.value
+                        });
+                      } else {
+                        // Address is within 10km, so we can select it
+                        selectedAddress.value = val;
+                        setState(() {
+                          // Update the local state to rebuild the dropdown
+                        });
+                      }
+                    }
+                  },
                 );
-              }).toList(),
-              onChanged: (val) {
-                selectedAddress.value = val;
               },
             )
           else
@@ -861,7 +949,8 @@ class OrderPage extends HookWidget {
     );
   }
 
-  Widget _buildPaymentButton(Function() openCheckout, bool isProcessing) {
+  Widget _buildPaymentButton(
+      Function() openCheckout, bool isProcessing, DeliveryInfo? deliveryInfo) {
     return Container(
       width: width,
       child: Column(
@@ -930,7 +1019,9 @@ class OrderPage extends HookWidget {
                   Text(
                     isProcessing
                         ? 'Processing...'
-                        : 'Proceed To Payment ₹${(item.price * item.quantity + 20).toStringAsFixed(0)}',
+                        : deliveryInfo != null
+                            ? 'Proceed To Payment ₹${(item.price * item.quantity + deliveryInfo.charge).toStringAsFixed(0)}'
+                            : 'Proceed To Payment ₹${(item.price * item.quantity + 20).toStringAsFixed(0)}',
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,

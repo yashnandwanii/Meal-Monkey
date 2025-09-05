@@ -39,7 +39,8 @@ FetchFoods useFetchFoods(String code) {
       }
     } catch (e) {
       debugPrint('Exception in fetchFoods: $e');
-      error.value = e as Exception;
+      error.value = Exception('Failed to fetch foods: $e');
+      foods.value = [];
     } finally {
       isLoading.value = false;
     }

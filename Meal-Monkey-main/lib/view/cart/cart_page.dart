@@ -5,9 +5,11 @@ import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common/constants.dart';
 import 'package:food_delivery_app/common/shimmers/foodlist_shimmer.dart';
 import 'package:food_delivery_app/controllers/login_controller.dart';
+import 'package:food_delivery_app/controllers/cart_controller.dart';
 import 'package:food_delivery_app/hooks/fetch_cart.dart';
 import 'package:food_delivery_app/models/cart_response.dart';
 import 'package:food_delivery_app/models/login_response.dart';
+import 'package:food_delivery_app/routes/routes.dart';
 import 'package:food_delivery_app/view/auth/verification_page.dart';
 import 'package:food_delivery_app/view/cart/widgets/cart_tile.dart';
 import 'package:get/get.dart';
@@ -49,7 +51,7 @@ class CartPage extends HookWidget {
       );
     }
 
-    if (user != null && user.verification == false) {
+    if (!user.verification) {
       return const VerificationPage();
     }
 
@@ -72,6 +74,11 @@ class CartPage extends HookWidget {
             icon: const Icon(Icons.refresh),
             onPressed: refetch,
           ),
+          if (carts.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.delete_outline),
+              onPressed: () => showClearCartDialog(carts),
+            ),
         ],
       ),
       body: SafeArea(
@@ -144,7 +151,7 @@ class CartPage extends HookWidget {
                     textStyle: const TextStyle(fontSize: 18),
                   ),
                   onPressed: () {
-                    //Get.to(()=> const OrderPage(restaurant: , food: null,, item: null,));
+                    proceedToCheckout(carts);
                   },
                   child: const Text(
                     'Proceed to Checkout',
@@ -156,5 +163,110 @@ class CartPage extends HookWidget {
         ),
       ),
     );
+  }
+
+  void proceedToCheckout(List<CartResponse> carts) {
+    if (carts.isEmpty) {
+      Get.snackbar(
+        'Empty Cart',
+        'Please add some items to your cart first',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    // Calculate total
+    final subtotal =
+        carts.fold<double>(0, (sum, item) => sum + item.totalPrice);
+    final deliveryFee = 20.0; // Default delivery fee
+    final total = subtotal + deliveryFee;
+
+    // Show checkout confirmation dialog
+    Get.dialog(
+      AlertDialog(
+        title: Text('Checkout Confirmation'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+                'Restaurant: ${carts.first.productId.restaurent.coords.title}'),
+            SizedBox(height: 8),
+            Text('Items: ${carts.length}'),
+            SizedBox(height: 8),
+            Text('Subtotal: ₹${subtotal.toStringAsFixed(2)}'),
+            Text('Delivery: ₹${deliveryFee.toStringAsFixed(2)}'),
+            Divider(),
+            Text('Total: ₹${total.toStringAsFixed(2)}',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(height: 16),
+            Text(
+                'Note: This will navigate you to the full checkout process where you can select address and complete payment.',
+                style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Get.back();
+              // Navigate to cart order page for full checkout
+              Get.toNamed(RouteNames.cartCheckout, arguments: carts);
+            },
+            child: Text('Proceed'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showClearCartDialog(List<CartResponse> carts) {
+    Get.dialog(
+      AlertDialog(
+        title: Text('Clear Cart'),
+        content: Text(
+            'Are you sure you want to clear all ${carts.length} items from your cart?'),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              clearAllCartItems();
+            },
+            child: Text('Clear All', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void clearAllCartItems() async {
+    try {
+      final controller = Get.put(CartController());
+      await controller.clearCart();
+      Get.snackbar(
+        'Cart Cleared',
+        'All items have been removed from your cart',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to clear cart: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
   }
 }

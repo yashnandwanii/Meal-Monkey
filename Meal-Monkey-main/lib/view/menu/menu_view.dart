@@ -18,8 +18,31 @@ class MenuView extends StatefulWidget {
   State<MenuView> createState() => _MenuViewState();
 }
 
-class _MenuViewState extends State<MenuView> {
+class _MenuViewState extends State<MenuView>
+    with AutomaticKeepAliveClientMixin {
   TextEditingController txtSearch = TextEditingController();
+  late SearchFoodController controller;
+  bool _isInitialized = false;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeController();
+  }
+
+  void _initializeController() {
+    if (!_isInitialized) {
+      controller = Get.put(SearchFoodController());
+      _isInitialized = true;
+      print('MenuView: Controller initialized and data loaded');
+    } else {
+      controller = Get.find<SearchFoodController>();
+      print('MenuView: Using existing controller - data preserved');
+    }
+  }
 
   List menuArr = [
     {
@@ -46,8 +69,9 @@ class _MenuViewState extends State<MenuView> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
+
     var media = MediaQuery.of(context).size;
-    final controller = Get.put(SearchFoodController());
 
     return Scaffold(
       appBar: PreferredSize(
