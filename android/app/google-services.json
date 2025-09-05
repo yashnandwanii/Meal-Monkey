@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "273316376823",
+    "project_id": "meal-monkey-71a01",
+    "storage_bucket": "meal-monkey-71a01.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:273316376823:android:fe18d427eecd987615e3f2",
+        "android_client_info": {
+          "package_name": "com.example.food_delivery_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzIhoVoND7zTs47U7deWyduDo9rcNPKBk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
