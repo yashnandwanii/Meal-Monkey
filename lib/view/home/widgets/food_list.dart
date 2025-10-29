@@ -9,14 +9,21 @@ import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 class FoodList extends HookWidget {
-  const FoodList({super.key});
+  final String? code;
+  final String type; // 'recommendation', 'random', 'bycode'
+  
+  const FoodList({
+    super.key,
+    this.code,
+    this.type = 'recommendation',
+  });
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    final hookResults = useFetchFoods('41007420');
+    final hookResults = useFetchFoods(code ?? '41007428', type: type);
     List<FoodItem>? foods = hookResults.data;
-    print('Foods: $foods');
+    debugPrint('FoodList [$type]: Loaded ${foods?.length ?? 0} foods with code: ${code ?? "41007428"}');
     final isLoading = hookResults.isLoading;
 
     return Container(

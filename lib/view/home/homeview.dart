@@ -96,7 +96,10 @@ class _HomeviewState extends State<Homeview>
                             );
                           },
                         ),
-                        const FoodList(),
+                        const FoodList(
+                          code: '41007428',
+                          type: 'recommendation',
+                        ),
                         Heading(
                           title: 'Food Closer to you',
                           onTap: () {
@@ -107,7 +110,10 @@ class _HomeviewState extends State<Homeview>
                             );
                           },
                         ),
-                        const FoodList(),
+                        const FoodList(
+                          code: '41007428',
+                          type: 'random',
+                        ),
                       ],
                     );
                   } else if (controller.titleValue == 'more' ||

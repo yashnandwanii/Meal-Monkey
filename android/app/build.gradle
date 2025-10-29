@@ -3,7 +3,7 @@ plugins {
     // START: FlutterFire Configuration
     id 'com.google.gms.google-services'
     // END: FlutterFire Configuration
-    id "kotlin-android"
+    id "org.jetbrains.kotlin.android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
@@ -32,7 +32,7 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.example.food_delivery_app"
         multiDexEnabled true
-        minSdk = 23
+        minSdkVersion = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -44,10 +44,19 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
+            // Ensure R8 uses our ProGuard configuration to keep Razorpay SDK classes
+            minifyEnabled true
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    // Provide ProGuard annotations at compile-time to satisfy R8 when processing Razorpay SDK
+    compileOnly 'com.guardsquare:proguard-annotations:7.4.1'
 }

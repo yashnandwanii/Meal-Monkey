@@ -17,7 +17,7 @@ dependencies:
   otp_text_field: ^1.0.0
   random_string: ^2.3.1
   shared_preferences: ^2.5.2
-  flutter_dotenv: ^5.2.1
+  flutter_dotenv: ^6.0.0
   otp_pin_field: ^1.4.0
   pin_code_fields: ^8.0.1
   page_transition: ^2.2.1
@@ -27,29 +27,30 @@ dependencies:
   flutter_hooks: ^0.21.2
   http: ^1.4.0
   flutter_screenutil: ^5.9.3
-  google_fonts: ^6.2.1
+  google_fonts: ^6.3.2
   shimmer: ^3.0.0
   cached_network_image: ^3.3.1
   phone_otp_verification: ^1.0.3
   flutter_svg: ^2.1.0
-  lottie: ^3.3.1
+  lottie: ^3.3.2
   get_storage: ^2.1.1
   flutter_otp_text_field: ^1.5.1+1
-  intl: ^0.19.0
+  intl: ^0.20.2
 
-  google_sign_in: ^6.2.1
+  google_sign_in: ^7.2.0
   google_maps_flutter: ^2.12.2
   geolocator: ^14.0.1
-  firebase_auth: ^5.6.0
-  firebase_core: ^3.14.0
+  firebase_auth: ^6.1.0
+  firebase_core: ^4.1.1
   razorpay_flutter: ^1.4.0
   fluttertoast: ^8.2.12
+  webview_flutter: ^4.7.0
   
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
@@ -76,5 +77,11 @@ flutter:
     - family: Poppins
       fonts:
         - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
         - asset: assets/fonts/Poppins-SemiBold.ttf
           weight: 600
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Poppins-ExtraBold.ttf
+          weight: 800

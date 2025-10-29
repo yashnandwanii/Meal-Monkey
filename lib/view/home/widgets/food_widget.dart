@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:food_delivery_app/common/app_style.dart';
 import 'package:food_delivery_app/common/color_extension.dart';
 import 'package:food_delivery_app/common/reusable_text.dart';
+import 'package:food_delivery_app/common_widgets/safe_network_image.dart';
 
 class FoodWidget extends StatelessWidget {
   const FoodWidget({
@@ -43,8 +44,8 @@ class FoodWidget extends StatelessWidget {
                   child: SizedBox(
                     height: 112.h,
                     width: width * 0.8,
-                    child: Image.network(
-                      image,
+                    child: SafeNetworkImage(
+                      imageUrl: image,
                       fit: BoxFit.fitWidth,
                     ),
                   ),

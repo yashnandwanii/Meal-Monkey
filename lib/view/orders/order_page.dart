@@ -20,6 +20,8 @@ import 'package:food_delivery_app/view/restaurent/Widgets/row_text.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:get/get.dart';
 import 'dart:async';
+import 'dart:io' show Platform;
+import 'package:food_delivery_app/view/payment/razorpay_web_checkout.dart';
 
 class OrderPage extends HookWidget {
   const OrderPage({
@@ -537,7 +539,7 @@ class OrderPage extends HookWidget {
         // Step 2: Prepare Razorpay checkout options
         var options = {
           'key': orderResponse.data!.key,
-          'amount': orderResponse.data!.amount,
+          'amount': orderResponse.data!.amount.toInt(), // Convert to int for Razorpay
           'currency': orderResponse.data!.currency,
           'name': restaurant.title,
           'description': 'Food Order Payment for ${food.title}',
@@ -558,8 +560,8 @@ class OrderPage extends HookWidget {
           },
         };
 
-        debugPrint("=== OPENING RAZORPAY PAYMENT GATEWAY ===");
-        debugPrint("Payment options: $options");
+  debugPrint("=== OPENING RAZORPAY PAYMENT GATEWAY ===");
+  debugPrint("Payment options: $options");
 
         // Validate Razorpay instance
         if (razorpay == null) {
@@ -567,12 +569,108 @@ class OrderPage extends HookWidget {
               'Payment gateway not available. Please restart the app and try again.');
         }
 
-        // Add a small delay to ensure UI is ready
-        await Future.delayed(const Duration(milliseconds: 500));
+        // Close loading dialog
+        if (Get.isDialogOpen == true) {
+          Get.back();
+        }
 
-        // Open Razorpay checkout
+        // Add a small delay to ensure UI is ready
+        await Future.delayed(const Duration(milliseconds: 300));
+
+  // iOS simulator fallback: use Web Checkout when test mode enabled
+  debugPrint('Platform.isIOS=${Platform.isIOS}, enableTestPaymentMode=$enableTestPaymentMode');
+  if (Platform.isIOS && enableTestPaymentMode) {
+          debugPrint('Using WebView checkout on iOS (test mode)');
+          final result = await Get.to(() => RazorpayWebCheckoutPage(options: options));
+          if (result is Map && result['success'] == true) {
+            final String paymentId = result['razorpay_payment_id'] ?? '';
+            final String razorpayOrderId = result['razorpay_order_id'] ?? '';
+            final String signature = result['razorpay_signature'] ?? '';
+
+            // Verify payment directly without constructing plugin types
+            if (currentOrderId.value == null) {
+              throw Exception('Order reference lost. Please try again.');
+            }
+
+            // Show verifying dialog
+            Get.dialog(
+              const Center(child: CircularProgressIndicator()),
+              barrierDismissible: false,
+            );
+
+            try {
+              final verificationRequest = PaymentVerificationRequest(
+                orderId: currentOrderId.value!,
+                razorpayOrderId: razorpayOrderId,
+                razorpayPaymentId: paymentId,
+                razorpaySignature: signature,
+              );
+              final verificationResponse = await PaymentService.verifyPayment(verificationRequest);
+
+              if (Get.isDialogOpen == true) Get.back();
+
+              if (verificationResponse.success && verificationResponse.data != null) {
+                Fluttertoast.showToast(
+                  msg: 'Payment successful and verified!',
+                  backgroundColor: Colors.green,
+                  textColor: Colors.white,
+                );
+                isProcessingPayment.value = false;
+                // Navigate or update UI as in success handler
+                Get.offAllNamed('/order-tracking', arguments: {
+                  'orderId': verificationResponse.data!.orderId,
+                  'paymentId': verificationResponse.data!.paymentId,
+                  'orderStatus': verificationResponse.data!.orderStatus,
+                  'paymentStatus': verificationResponse.data!.paymentStatus,
+                });
+              } else {
+                throw Exception(verificationResponse.message);
+              }
+            } catch (e) {
+              if (Get.isDialogOpen == true) Get.back();
+              isProcessingPayment.value = false;
+              Get.snackbar(
+                'Verification Failed',
+                e.toString(),
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.red.withValues(alpha: 0.8),
+                colorText: Colors.white,
+              );
+            }
+          } else {
+            // Dismissed or failed
+            isProcessingPayment.value = false;
+            if (result is Map && result['error'] != null) {
+              Get.snackbar(
+                'Payment Failed',
+                result['error']['description']?.toString() ?? 'Payment was not completed',
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.red.withValues(alpha: 0.8),
+                colorText: Colors.white,
+              );
+            }
+          }
+          return;
+        }
+
+        // Open Razorpay checkout (native)
         debugPrint("Opening Razorpay payment gateway...");
-        razorpay.open(options);
+        
+        try {
+          razorpay.open(options);
+          debugPrint("Razorpay.open() called successfully");
+        } catch (razorpayError) {
+          debugPrint("Error calling razorpay.open(): $razorpayError");
+          
+          // Fallback error dialog
+          Get.snackbar(
+            'Payment Gateway Error',
+            'Could not open payment gateway. Please try again.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red.withValues(alpha: 0.8),
+            colorText: Colors.white,
+          );
+        }
 
         // Add a timeout to reset processing state if modal doesn't open
         Timer(const Duration(seconds: 20), () {

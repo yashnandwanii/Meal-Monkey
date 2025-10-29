@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:food_delivery_app/common/constants.dart';
@@ -19,6 +20,12 @@ class RegistrationController extends GetxController {
     setLoading = true;
 
     Uri uri = Uri.parse('$appBaseUrl/register');
+    debugPrint('=== REGISTRATION REQUEST ===');
+    debugPrint('Using base URL: $appBaseUrl');
+    debugPrint('Full URL: ${uri.toString()}');
+    debugPrint('Platform: ${Platform.operatingSystem}');
+    debugPrint('==========================');
+    
     Map<String, String> headers = {
       'Content-Type': 'application/json',
     };

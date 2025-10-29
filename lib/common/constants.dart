@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:io';
 
+// Enable test payment mode for iOS simulator by using Web Checkout fallback
+// Set to false on physical devices for native SDK
+const bool enableTestPaymentMode = true;
+
 // Platform-aware base URL for development
 String get _developmentBaseUrl {
   if (Platform.isAndroid) {
@@ -13,7 +17,14 @@ String get _developmentBaseUrl {
   }
 }
 
-final String appBaseUrl = dotenv.env['APP_BASE_URL'] ?? _developmentBaseUrl;
+// Get base URL from .env or use platform-aware default
+String get appBaseUrl {
+  final envUrl = dotenv.env['APP_BASE_URL'];
+  if (envUrl != null && envUrl.isNotEmpty) {
+    return envUrl;
+  }
+  return _developmentBaseUrl;
+}
 final String googleApiKey =
     dotenv.env['GOOGLE_API_KEY'] ?? 'AIzaSyD_IyXT12elpZ2KvqojoAyQjAyeHiTpuVY';
 const Color offWhite = Color(0xFFFAF9F6);
