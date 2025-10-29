@@ -72,3 +72,13 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 ## License
 
 This project is for educational/demo purposes. Please check with the repository owner for licensing details.
+
+## Related repositories
+
+This project is part of the Meal Monkey workspace. If you want to explore other repositories used in this project, here are the main ones:
+
+- Delivery Partner App (backend + mobile): https://github.com/yashnandwanii/Delivery-Partner-App
+- Meal Monkey Backend (API server): https://github.com/yashnandwanii/Meal-Monkey-Backend
+- Restaurant Owner App (Flutter): https://github.com/yashnandwanii/Restaurent-App
+
+If you need direct links to specific folders or help cloning any of these repositories, tell me which one and I can clone or open them for you.
